@@ -13,7 +13,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public'), { index: false }));
 
-// Redirigir rutas con .html a sus equivalentes sin extensión
+// Redirigir rutas con .html 
 app.get(/^\/(.+)\.html$/, (req, res) => {
   const cleanPath = '/' + req.params[0];
   res.redirect(cleanPath);
