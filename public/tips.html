@@ -1,0 +1,2065 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mis Tips</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f8f8f8;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #e91e63;
+      color: #fff;
+      padding: 15px 20px;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 60px; /*La porqueria esa del espacio entre las dos vainas*/
+      border-radius: 10px;
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+
+    header button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 22px;
+      color: #fff;
+    }
+
+    h2 {
+      margin: 30px 10px 15px;
+      color: #333;
+      text-align: center;
+      font-weight: bold;
+    }
+
+
+    .carrusel {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      gap: 15px;
+      padding: 15px;
+      width: calc(250px * 3 + 15px * 2 + 30px);
+      margin: 0 auto;
+    }
+
+    .carrusel::-webkit-scrollbar {
+      height: 8px;
+    }
+    
+    .carrusel::-webkit-scrollbar-thumb {
+      background: #e91e63;
+      border-radius: 4px;
+    }
+    
+    .carrusel::-webkit-scrollbar-track {
+      background: #f0f0f0;
+      border-radius: 4px;
+    }
+
+    .tarjeta {
+      flex: 0 0 auto;
+      width: 250px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(233, 30, 99, 0.1);
+      scroll-snap-align: start;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .tarjeta:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(233, 30, 99, 0.15);
+    }
+
+    .tarjeta img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+
+    .tarjeta .contenido {
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex: 1;
+    }
+
+    .tarjeta h3 {
+      font-size: 16px;
+      margin: 0 0 10px;
+      color: #e91e63;
+      font-weight: bold;
+    }
+
+    .tarjeta p {
+      font-size: 14px;
+      color: #555;
+      margin: 0 0 12px;
+      line-height: 1.4;
+    }
+
+    .tarjeta .acciones {
+      display: flex;
+      gap: 8px;
+    }
+
+    .tarjeta button {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    .tarjeta .ver {
+      background: #e91e63;
+      color: #fff;
+      flex: 2;
+    }
+    
+    .tarjeta .ver:hover {
+      background: #c2185b;
+      transform: translateY(-2px);
+    }
+
+    .tarjeta .guardar {
+      background: #4caf50;
+      color: #fff;
+      flex: 1;
+    }
+    
+    .tarjeta .guardar:hover {
+      background: #388e3c;
+      transform: translateY(-2px);
+    }
+
+ 
+    #modalGuardados,
+    #modalVerMas {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 1050;
+    }
+    
+    .modal-contenido {
+      background: #fff;
+      border-radius: 12px;
+      padding: 25px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80%;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    
+    .modal-contenido h3 {
+      margin-top: 0;
+      color: #e91e63;
+      border-bottom: 2px solid #f0f0f0;
+      padding-bottom: 12px;
+      font-weight: bold;
+    }
+    
+    .modal-contenido button.cerrar {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      color: #e91e63;
+      transition: color 0.3s;
+    }
+    
+    .modal-contenido button.cerrar:hover {
+      color: #c2185b;
+    }
+    
+ 
+    .contenido-detallado {
+      margin-top: 15px;
+    }
+    
+    .contenido-detallado h4 {
+      color: #e91e63;
+      margin: 20px 0 10px;
+      font-size: 17px;
+      font-weight: bold;
+    }
+    
+    .contenido-detallado ul {
+      padding-left: 20px;
+      margin: 10px 0;
+    }
+    
+    .contenido-detallado li {
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+    
+    .consejo-destacado {
+      background: linear-gradient(135deg, #fce4ec, #f8bbd9);
+      border-left: 4px solid #e91e63;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+    }
+    
+    .consejo-destacado strong {
+      color: #c2185b;
+    }
+
+   
+    .item-guardado {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 8px;
+      background: #f9f9f9;
+      transition: background 0.3s;
+    }
+    
+    .item-guardado:hover {
+      background: #f0f0f0;
+    }
+    
+    .item-guardado img {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+    
+    .item-guardado span {
+      flex: 1;
+      font-size: 14px;
+      color: #333;
+      font-weight: 500;
+    }
+    
+    .item-guardado button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      color: #e91e63;
+      transition: color 0.3s;
+    }
+    
+    .item-guardado button:hover {
+      color: #c2185b;
+    }
+    
+  
+    @media (max-width: 768px) {
+      .carrusel {
+        width: calc(250px * 2 + 15px * 1 + 30px);
+      }
+      
+      body {
+        padding-top: 70px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .carrusel {
+        width: calc(250px * 1 + 30px);
+      }
+      
+      .tarjeta {
+        width: 240px;
+      }
+    }
+  </style>
+</head>
+<body>
+ <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+    <div class="container">
+    <a class="navbar-brand" href="#" style="color: #f76c66; font-weight: bold;">
+        <img src="img/VA.png" width="70" height="50" alt="OvaTack" style="vertical-align: middle;"> OvaTack
+    </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-center" id="menuNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="/usuario">Inicio</a></li>
+<li class="nav-item"><a class="nav-link" href="/calendario">Calendario</a></li>
+<li class="nav-item"><a class="nav-link" href="/tipsview">Tips</a></li>
+<li class="nav-item"><a class="nav-link" href="/blog">Girly Blog</a></li>
+
+        </ul>
+      </div>
+
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item dropdown">
+          <a id="user-link" class="nav-link dropdown-toggle fw-bold" href="#" role="button" data-bs-toggle="dropdown"></a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a id="logout-link" class="dropdown-item text-danger fw-bold" href="#">Cerrar sesión</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  
+  <header>
+    <div id="nombreUsuario"></div>
+    <button onclick="abrirGuardados()">📎</button>
+  </header>
+
+ 
+<h2 style="text-align:center;">Ginecobstetra</h2>
+  <div class="carrusel">
+    <div class="tarjeta">
+      <img src="img/1.png" alt="Consulta regular">
+      <div class="contenido">
+        <h3>Consulta regular</h3>
+        <p>Visita al ginecólogo una vez al año...</p>
+        <div class="acciones">
+          <button class="ver" onclick="verMas('consulta-regular')">Ver más</button>
+          <button class="guardar" onclick="guardarTip('Consulta regular','img/1.png')">Guardar</button>
+        </div>
+      </div>
+    </div>
+    <div class="tarjeta">
+      <img src="img/2.png" alt="Exámenes">
+      <div class="contenido">
+        <h3>Exámenes</h3>
+        <p>Realiza citologías y ecografías recomendadas...</p>
+        <div class="acciones">
+          <button class="ver" onclick="verMas('examenes')">Ver más</button>
+          <button class="guardar" onclick="guardarTip('Exámenes','img/2.png')">Guardar</button>
+        </div>
+      </div>
+    </div>
+    <div class="tarjeta">
+      <img src="img/3.png" alt="Papanicolau">
+      <div class="contenido">
+        <h3>Papanicolau</h3>
+        <p>Realiza un Papanicolau según la frecuencia recomendada por tu médico.</p>
+        <div class="acciones">
+          <button class="ver" onclick="verMas('papanicolau')">Ver más</button>
+          <button class="guardar" onclick="guardarTip('Papanicolau','img/3.png')">Guardar</button>
+        </div>
+      </div>
+    </div>
+    <div class="tarjeta">
+      <img src="img/4.png" alt="Anticonceptivos con médico">
+      <div class="contenido">
+        <h3>Anticonceptivos con médico</h3>
+        <p>Consulta con tu médico sobre el método anticonceptivo más adecuado para ti.</p>
+        <div class="acciones">
+          <button class="ver" onclick="verMas('anticonceptivos-medico')">Ver más</button>
+          <button class="guardar" onclick="guardarTip('Anticonceptivos con médico','img/4.png')">Guardar</button>
+        </div>
+      </div>
+    </div>
+    <div class="tarjeta">
+      <img src="img/5.png" alt="Control hormonal">
+      <div class="contenido">
+        <h3>Control hormonal</h3>
+        <p>Consulta con tu médico sobre el control hormonal y su importancia.</p>
+        <div class="acciones">
+          <button class="ver" onclick="verMas('control-hormonal')">Ver más</button>
+          <button class="guardar" onclick="guardarTip('Control hormonal','img/5.png')">Guardar</button>
+        </div>
+      </div>
+    </div>
+    <div class="tarjeta">
+      <img src="img/6.png" alt="Chequeo mamario">
+      <div class="contenido">
+        <h3>Chequeo mamario</h3>
+        <p>Consulta con tu médico sobre la importancia del chequeo mamario.</p>
+        <div class="acciones">
+          <button class="ver" onclick="verMas('chequeo-mamario')">Ver más</button>
+          <button class="guardar" onclick="guardarTip('Chequeo mamario','img/6.png')">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2 style="text-align:center;">Controlar síndrome premenstrual</h2>
+  <div class="carrusel">
+    <div class="tarjeta">
+      <img src="img/7.png" alt="Cambios emocionales">
+      <div class="contenido">
+        <h3>Cambios emocionales</h3>
+        <p>Los cambios hormonales pueden afectar el ánimo...</p>
+        <div class="acciones">
+          <button class="ver" onclick="verMas('cambios-emocionales')">Ver más</button>
+          <button class="guardar" onclick="guardarTip('Cambios emocionales','img/7.png')">Guardar</button>
+        </div>
+      </div>
+    </div>
+    <div class="tarjeta">
+      <img src="img/8.png" alt="Colicos">
+      <div class="contenido">
+        <h3>Colicos</h3>
+        <p>Los cólicos menstruales son comunes y varían en intensidad...</p>
+        <div class="acciones">
+          <button class="ver" onclick="verMas('colicos')">Ver más</button>
+          <button class="guardar" onclick="guardarTip('Colicos','img/8.png')">Guardar</button>
+        </div>
+      </div>
+    </div>
+    <div class="tarjeta">
+      <img src="img/9.png" alt="Medidas para el SPM">
+      <div class="contenido">
+        <h3>Medidas para el SPM</h3>
+        <p>Existen diversas medidas para aliviar los síntomas del síndrome premenstrual...</p>
+        <div class="acciones">
+          <button class="ver" onclick="verMas('medidas-spm')">Ver más</button>
+          <button class="guardar" onclick="guardarTip('Medidas para el SPM','img/9.png')">Guardar</button>
+        </div>
+      </div>
+    </div>
+    <div class="tarjeta">
+      <img src="img/10.png" alt="Hidratación">
+      <div class="contenido">
+        <h3>Hidratación</h3>
+        <p>La hidratación adecuada es clave para aliviar los síntomas del SPM...</p>
+        <div class="acciones">
+          <button class="ver" onclick="verMas('hidratacion')">Ver más</button>
+          <button class="guardar" onclick="guardarTip('Hidratación','img/10.png')">Guardar</button>
+        </div>
+      </div>
+    </div>
+    <div class="tarjeta">
+      <img src="img/11.png" alt="Hinchazón">
+      <div class="contenido">
+        <h3>Hinchazón</h3>
+        <p>La hinchazón es un síntoma común del síndrome premenstrual...</p>
+        <div class="acciones">
+          <button class="ver" onclick="verMas('hinchazon')">Ver más</button>
+          <button class="guardar" onclick="guardarTip('Hinchazón','img/11.png')">Guardar</button>
+        </div>
+      </div>
+    </div>
+    <div class="tarjeta">
+      <img src="img/12.png" alt="Técnicas de relajación">
+      <div class="contenido">
+        <h3>Técnicas de relajación</h3>
+        <p>Las técnicas de relajación pueden ayudar a aliviar el estrés...</p>
+        <div class="acciones">
+          <button class="ver" onclick="verMas('tecnicas-relajacion')">Ver más</button>
+          <button class="guardar" onclick="guardarTip('Técnicas de relajación','img/12.png')">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2 style="text-align:center;">Anticonceptivos</h2>
+<div class="carrusel">
+  <div class="tarjeta">
+    <img src="img/13.png" alt="Pastillas anticonceptivas">
+    <div class="contenido">
+      <h3>Pastillas anticonceptivas</h3>
+      <p>Usar a la misma hora cada día.</p>
+      <div class="acciones">
+        <button class="ver" onclick="verMas('pastillas-anticonceptivas')">Ver más</button>
+        <button class="guardar" onclick="guardarTip('Pastillas anticonceptivas','img/13.png')">Guardar</button>
+      </div>
+    </div>
+  </div>
+  <div class="tarjeta">
+    <img src="img/14.png" alt="Condón masculino">
+    <div class="contenido">
+      <h3>Condón masculino</h3>
+      <p>Protege de embarazos e ITS.</p>
+      <div class="acciones">
+        <button class="ver" onclick="verMas('condon-masculino')">Ver más</button>
+        <button class="guardar" onclick="guardarTip('Condón masculino','img/14.png')">Guardar</button>
+      </div>
+    </div>
+  </div>
+  <div class="tarjeta">
+    <img src="img/15.png" alt="Condón femenino">
+    <div class="contenido">
+      <h3>Condón femenino</h3>
+      <p>Alternativa con protección doble.</p>
+      <div class="acciones">
+        <button class="ver" onclick="verMas('condon-femenino')">Ver más</button>
+        <button class="guardar" onclick="guardarTip('Condón femenino','img/15.png')">Guardar</button>
+      </div>
+    </div>
+  </div>
+  <div class="tarjeta">
+    <img src="img/16.png" alt="DIU">
+    <div class="contenido">
+      <h3>DIU</h3>
+      <p>Método de larga duración.</p>
+      <div class="acciones">
+        <button class="ver" onclick="verMas('diu')">Ver más</button>
+        <button class="guardar" onclick="guardarTip('DIU','img/16.png')">Guardar</button>
+      </div>
+    </div>
+  </div>
+  <div class="tarjeta">
+    <img src="img/17.png" alt="Inyección hormonal">
+    <div class="contenido">
+      <h3>Inyección hormonal</h3>
+      <p>Mensual o trimestral.</p>
+      <div class="acciones">
+        <button class="ver" onclick="verMas('inyeccion-hormonal')">Ver más</button>
+        <button class="guardar" onclick="guardarTip('Inyección hormonal','img/17.png')">Guardar</button>
+      </div>
+    </div>
+  </div>
+  <div class="tarjeta">
+    <img src="img/18.png" alt="Implante subdérmico">
+    <div class="contenido">
+      <h3>Implante subdérmico</h3>
+      <p>Protección hasta 3 años.</p>
+      <div class="acciones">
+        <button class="ver" onclick="verMas('implante-subdermico')">Ver más</button>
+        <button class="guardar" onclick="guardarTip('Implante subdérmico','img/18.png')">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2 style="text-align:center;">Guía sobre el flujo</h2>
+<div class="carrusel">
+  <div class="tarjeta">
+    <img src="img/19.png" alt="Flujo transparente">
+    <div class="contenido">
+      <h3>Flujo transparente</h3>
+      <p>Suele indicar ovulación.</p>
+      <div class="acciones">
+        <button class="ver" onclick="verMas('flujo-transparente')">Ver más</button>
+        <button class="guardar" onclick="guardarTip('Flujo transparente','img/19.png')">Guardar</button>
+      </div>
+    </div>
+  </div>
+  <div class="tarjeta">
+    <img src="img/20.png" alt="Flujo blanco y espeso">
+    <div class="contenido">
+      <h3>Flujo blanco y espeso</h3>
+      <p>Normal en fase luteínica.</p>
+      <div class="acciones">
+        <button class="ver" onclick="verMas('flujo-blanco-espeso')">Ver más</button>
+        <button class="guardar" onclick="guardarTip('Flujo blanco y espeso','img/20.png')">Guardar</button>
+      </div>
+    </div>
+  </div>
+  <div class="tarjeta">
+    <img src="img/21.png" alt="Flujo marrón">
+    <div class="contenido">
+      <h3>Flujo marrón</h3>
+      <p>Puede ser restos de sangre.</p>
+      <div class="acciones">
+        <button class="ver" onclick="verMas('flujo-marron')">Ver más</button>
+        <button class="guardar" onclick="guardarTip('Flujo marrón','img/21.png')">Guardar</button>
+      </div>
+    </div>
+  </div>
+  <div class="tarjeta">
+    <img src="img/22.png" alt="Flujo amarillento">
+    <div class="contenido">
+      <h3>Flujo amarillento</h3>
+      <p>Atención si hay olor fuerte.</p>
+      <div class="acciones">
+        <button class="ver" onclick="verMas('flujo-amarillento')">Ver más</button>
+        <button class="guardar" onclick="guardarTip('Flujo amarillento','img/22.png')">Guardar</button>
+      </div>
+    </div>
+  </div>
+  <div class="tarjeta">
+    <img src="img/23.png" alt="Flujo rosado">
+    <div class="contenido">
+      <h3>Flujo rosado</h3>
+      <p>A veces aparece tras la regla.</p>
+      <div class="acciones">
+        <button class="ver" onclick="verMas('flujo-rosado')">Ver más</button>
+        <button class="guardar" onclick="guardarTip('Flujo rosado','img/23.png')">Guardar</button>
+      </div>
+    </div>
+  </div>
+  <div class="tarjeta">
+    <img src="img/24.png" alt="Flujo con mal olor">
+    <div class="contenido">
+      <h3>Flujo con mal olor</h3>
+      <p>Consulta médica inmediata.</p>
+      <div class="acciones">
+        <button class="ver" onclick="verMas('flujo-mal-olor')">Ver más</button>
+        <button class="guardar" onclick="guardarTip('Flujo con mal olor','img/24.png')">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2 style="text-align:center;">Sexo más seguro</h2>
+<div class="carrusel">
+  <div class="tarjeta">
+    <img src="img/25.png" alt="Uso correcto del condón">
+    <div class="contenido">
+      <h3>Uso correcto del condón</h3>
+      <p>Desde el inicio de la relación.</p>
+      <div class="acciones">
+        <button class="ver" onclick="verMas('uso-condon')">Ver más</button>
+        <button class="guardar" onclick="guardarTip('Uso correcto del condón','img/25.png')">Guardar</button>
+      </div>
+    </div>
+  </div>
+  <div class="tarjeta">
+    <img src="img/26.png" alt="Lubricantes seguros">
+    <div class="contenido">
+      <h3>Lubricantes seguros</h3>
+      <p>Prefiere base de agua.</p>
+      <div class="acciones">
+        <button class="ver" onclick="verMas('lubricantes-seguros')">Ver más</button>
+        <button class="guardar" onclick="guardarTip('Lubricantes seguros','img/26.png')">Guardar</button>
+      </div>
+    </div>
+  </div>
+  <div class="tarjeta">
+    <img src="img/27.png" alt="Pareja estable">
+    <div class="contenido">
+      <h3>Pareja estable</h3>
+      <p>Reduce exposición a ITS.</p>
+      <div class="acciones">
+        <button class="ver" onclick="verMas('pareja-estable')">Ver más</button>
+        <button class="guardar" onclick="guardarTip('Pareja estable','img/27.png')">Guardar</button>
+      </div>
+    </div>
+  </div>
+  <div class="tarjeta">
+    <img src="img/28.png" alt="Pruebas periódicas">
+    <div class="contenido">
+      <h3>Pruebas periódicas</h3>
+      <p>Chequéate para mayor seguridad.</p>
+      <div class="acciones">
+        <button class="ver" onclick="verMas('pruebas-periodicas')">Ver más</button>
+        <button class="guardar" onclick="guardarTip('Pruebas periódicas','img/28.png')">Guardar</button>
+      </div>
+    </div>
+  </div>
+  <div class="tarjeta">
+    <img src="img/29.png" alt="No al sexo bajo alcohol/drogas">
+    <div class="contenido">
+      <h3>No al sexo bajo alcohol/drogas</h3>
+      <p>Aumenta riesgos.</p>
+      <div class="acciones">
+        <button class="ver" onclick="verMas('no-sexo-alcohol-drogas')">Ver más</button>
+        <button class="guardar" onclick="guardarTip('No al sexo bajo alcohol/drogas','img/29.png')">Guardar</button>
+      </div>
+    </div>
+  </div>
+  <div class="tarjeta">
+    <img src="img/30.png" alt="Consentimiento siempre">
+    <div class="contenido">
+      <h3>Consentimiento siempre</h3>
+      <p>El respeto es básico.</p>
+      <div class="acciones">
+        <button class="ver" onclick="verMas('consentimiento-siempre')">Ver más</button>
+        <button class="guardar" onclick="guardarTip('Consentimiento siempre','img/30.png')">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2 style="text-align:center;">Señales de embarazo</h2>
+<div class="carrusel">
+  <div class="tarjeta">
+    <img src="img/31.png" alt="Retraso menstrual">
+    <div class="contenido">
+      <h3>Retraso menstrual</h3>
+      <p>Primer signo común.</p>
+      <div class="acciones">
+        <button class="ver" onclick="verMas('retraso-menstrual')">Ver más</button>
+        <button class="guardar" onclick="guardarTip('Retraso menstrual','img/31.png')">Guardar</button>
+      </div>
+    </div>
+  </div>
+  <div class="tarjeta">
+    <img src="img/32.png" alt="Sensibilidad en senos">
+    <div class="contenido">
+      <h3>Sensibilidad en senos</h3>
+      <p>Dolor o hinchazón.</p>
+      <div class="acciones">
+        <button class="ver" onclick="verMas('sensibilidad-senos')">Ver más</button>
+        <button class="guardar" onclick="guardarTip('Sensibilidad en senos','img/32.png')">Guardar</button>
+      </div>
+    </div>
+  </div>
+  <div class="tarjeta">
+    <img src="img/33.png" alt="Náuseas">
+    <div class="contenido">
+      <h3>Náuseas</h3>
+      <p>Sobre todo matutinas.</p>
+      <div class="acciones">
+        <button class="ver" onclick="verMas('nauseas')">Ver más</button>
+        <button class="guardar" onclick="guardarTip('Náuseas','img/33.png')">Guardar</button>
+      </div>
+    </div>
+  </div>
+  <div class="tarjeta">
+    <img src="img/34.png" alt="Cansancio extremo">
+    <div class="contenido">
+      <h3>Cansancio extremo</h3>
+      <p>Fatiga sin razón aparente.</p>
+      <div class="acciones">
+        <button class="ver" onclick="verMas('cansancio-extremo')">Ver más</button>
+        <button class="guardar" onclick="guardarTip('Cansancio extremo','img/34.png')">Guardar</button>
+      </div>
+    </div>
+  </div>
+  <div class="tarjeta">
+    <img src="img/35.png" alt="Aumento de orina">
+    <div class="contenido">
+      <h3>Aumento de orina</h3>
+      <p>Necesidad frecuente.</p>
+      <div class="acciones">
+        <button class="ver" onclick="verMas('aumento-orina')">Ver más</button>
+        <button class="guardar" onclick="guardarTip('Aumento de orina','img/35.png')">Guardar</button>
+      </div>
+    </div>
+  </div>
+  <div class="tarjeta">
+    <img src="img/36.png" alt="Cambios de humor">
+    <div class="contenido">
+      <h3>Cambios de humor</h3>
+      <p>Mayor sensibilidad.</p>
+      <div class="acciones">
+        <button class="ver" onclick="verMas('cambios-humor')">Ver más</button>
+        <button class="guardar" onclick="guardarTip('Cambios de humor','img/36.png')">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+  <div id="modalGuardados">
+    <div class="modal-contenido">
+      <button class="cerrar" onclick="cerrarGuardados()">✖</button>
+      <h3>Mis tips guardados</h3>
+      <div id="listaGuardados">No tienes tips guardados aún.</div>
+    </div>
+  </div>
+
+
+  <div id="modalVerMas">
+    <div class="modal-contenido">
+      <button class="cerrar" onclick="cerrarVerMas()">✖</button>
+      <h3 id="tituloVerMas"></h3>
+      <div id="textoVerMas" class="contenido-detallado"></div>
+    </div>
+  </div>
+
+<h2 style="text-align:center;">Agregados recientemente</h2>
+<div id="tips-nuevos" class="carrusel"></div>
+
+
+  <script>
+
+
+
+    async function cargarTipsNuevos() {
+  const res = await fetch('/api/tips');
+  const tips = await res.json();
+  const contenedor = document.getElementById('tips-nuevos');
+
+  contenedor.innerHTML = tips.map(t => `
+    <div class="tarjeta">
+      <img src="${t.imagen}" alt="${t.titulo}">
+      <div class="contenido">
+        <h3>${t.titulo}</h3>
+        <p>${t.descripcion}</p>
+        <div class="acciones">
+          <button class="ver" onclick="alert('${t.descripcion}')">Ver más</button>
+          <button class="guardar" onclick="guardarTip('${t.titulo}','${t.imagen}')">Guardar</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+document.addEventListener('DOMContentLoaded', cargarTipsNuevos);
+    
+
+const contenidoDetallado = {
+  'consulta-regular': {
+    titulo: 'Consulta regular',
+    contenido: `
+      <p>Las consultas ginecológicas regulares son esenciales para mantener una buena salud reproductiva y detectar posibles problemas a tiempo.</p>
+      
+      <h4>¿Por qué es importante?</h4>
+      <ul>
+        <li>Permite detectar problemas de salud tempranamente</li>
+        <li>Ayuda a prevenir enfermedades como el cáncer cervicouterino</li>
+        <li>Proporciona educación sobre salud reproductiva</li>
+        <li>Permite resolver dudas sobre anticoncepción y sexualidad</li>
+      </ul>
+      
+      <h4>¿Con qué frecuencia debes ir?</h4>
+      <p>Se recomienda una visita anual si:</p>
+      <ul>
+        <li>Tienes entre 21 y 65 años</li>
+        <li>Eres sexualmente activa</li>
+        <li>No presentas síntomas preocupantes</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Consejo:</strong> Programa tu cita anual en una fecha fácil de recordar, como cerca de tu cumpleaños.
+      </div>
+    `
+  },
+  'examenes': {
+    titulo: 'Exámenes ginecológicos',
+    contenido: `
+      <p>Los exámenes ginecológicos son herramientas fundamentales para evaluar tu salud reproductiva y detectar posibles anomalías.</p>
+      
+      <h4>Exámenes principales</h4>
+      <ul>
+        <li><strong>Citología vaginal (Papanicolaou):</strong> Detecta cambios celulares en el cuello uterino que podrían indicar cáncer</li>
+        <li><strong>Ecografía ginecológica:</strong> Evalúa útero, ovarios y endometrio</li>
+        <li><strong>Colposcopía:</strong> Examen detallado del cuello uterino con aumento</li>
+        <li><strong>Mamografía:</strong> Detección de cáncer de mama (a partir de los 40 años)</li>
+      </ul>
+      
+      <h4>Frecuencia recomendada</h4>
+      <ul>
+        <li>Citología: Cada 3 años si los resultados anteriores fueron normales</li>
+        <li>Ecografía: Según indicación médica o si hay síntomas</li>
+        <li>Mamografía: Anual a partir de los 40-45 años</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Importante:</strong> Lleva un registro de tus exámenes y sus resultados para mostrárselos a tu médico en cada consulta.
+      </div>
+    `
+  },
+  'papanicolau': {
+    titulo: 'Papanicolau',
+    contenido: `
+      <p>La citología vaginal o prueba de Papanicolaou es un examen sencillo que puede salvar vidas al detectar cambios celulares que podrían convertirse en cáncer de cuello uterino.</p>
+      
+      <h4>¿En qué consiste?</h4>
+      <p>Durante el examen, el médico:</p>
+      <ul>
+        <li>Inserta un espéculo en la vagina para visualizar el cuello uterino</li>
+        <li>Realiza un ligero raspado para obtener muestras de células</li>
+        <li>Envía las muestras a un laboratorio para su análisis</li>
+      </ul>
+      
+      <h4>Preparación para el examen</h4>
+      <ul>
+        <li>No tener relaciones sexuales 48 horas antes</li>
+        <li>No usar duchas vaginales, tampones o medicamentos vaginales</li>
+        <li>Programar la cita fuera de tu período menstrual</li>
+      </ul>
+      
+      <h4>Interpretación de resultados</h4>
+      <ul>
+        <li><strong>Normal:</strong> No se encontraron células anormales</li>
+        <li><strong>Anormal:</strong> Puede indicar infección, inflamación o cambios precancerosos</li>
+        <li><strong>Insatisfactorio:</strong> La muestra no era adecuada y debe repetirse</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Recuerda:</strong> Un resultado anormal no significa necesariamente que tengas cáncer. La mayoría de las anomalías son tratables.
+      </div>
+    `
+  },
+  'anticonceptivos-medico': {
+    titulo: 'Anticonceptivos con médico',
+    contenido: `
+      <p>La elección del método anticonceptivo debe ser personalizada y supervisada por un profesional de la salud para garantizar su efectividad y seguridad.</p>
+      
+      <h4>¿Por qué consultar con un médico?</h4>
+      <ul>
+        <li>Evaluación de tu estado de salud general</li>
+        <li>Consideración de tus antecedentes médicos y familiares</li>
+        <li>Análisis de posibles efectos secundarios</li>
+        <li>Información sobre eficacia y uso correcto</li>
+      </ul>
+      
+      <h4>Factores a considerar</h4>
+      <ul>
+        <li><strong>Edad:</strong> Algunos métodos son más adecuados según la edad</li>
+        <li><strong>Planes reproductivos:</strong> Si deseas embarazarte pronto o a largo plazo</li>
+        <li><strong>Estado de salud:</strong> Enfermedades crónicas, medicamentos, etc.</li>
+        <li><strong>Preferencias personales:</strong> Comodidad, discreción, frecuencia de uso</li>
+      </ul>
+      
+      <h4>Preguntas para hacerle a tu médico</h4>
+      <ul>
+        <li>¿Qué método es más efectivo para mí?</li>
+        <li>¿Qué efectos secundarios puedo esperar?</li>
+        <li>¿Protege contra enfermedades de transmisión sexual?</li>
+        <li>¿Qué hacer si olvido usarlo correctamente?</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Importante:</strong> No cambies de método anticonceptivo sin consultar primero con tu médico.
+      </div>
+    `
+  },
+  'control-hormonal': {
+    titulo: 'Control hormonal',
+    contenido: `
+      <p>El control hormonal es fundamental para entender y manejar diversos aspectos de la salud femenina, desde el ciclo menstrual hasta la menopausia.</p>
+      
+      <h4>¿Qué son las hormonas femeninas?</h4>
+      <ul>
+        <li><strong>Estrógenos:</strong> Responsables del desarrollo de caracteres sexuales y ciclo menstrual</li>
+        <li><strong>Progesterona:</strong> Prepara el útero para posible embarazo</li>
+        <li><strong>Testosterona:</strong> En menor cantidad, influye en la libido</li>
+      </ul>
+      
+      <h4>¿Cuándo consultar por desequilibrios hormonales?</h4>
+      <ul>
+        <li>Ciclos menstruales irregulares o ausentes</li>
+        <li>Acné persistente en edad adulta</li>
+        <li>Cambios de humor severos relacionados con el ciclo</li>
+        <li>Exceso de vello facial o corporal</li>
+        <li>Pérdida o aumento de peso inexplicable</li>
+        <li>Dificultades para concebir</li>
+      </ul>
+      
+      <h4>Exámenes para evaluar el balance hormonal</h4>
+      <ul>
+        <li>Perfil hormonal en sangre</li>
+        <li>Ecografía ginecológica</li>
+        <li>Pruebas de función tiroidea</li>
+        <li>Estudios de glucosa e insulina</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Consejo:</strong> Lleva un registro de tu ciclo menstrual y síntomas para ayudar a tu médico en el diagnóstico.
+      </div>
+    `
+  },
+  'chequeo-mamario': {
+    titulo: 'Chequeo mamario',
+    contenido: `
+      <p>El autocuidado mamario es una parte esencial de la salud femenina que puede ayudar en la detección temprana de anomalías.</p>
+      
+      <h4>Autoexamen mamario</h4>
+      <p>Realízalo mensualmente, aproximadamente una semana después de tu menstruación:</p>
+      <ul>
+        <li><strong>Observación:</strong> Frente al espejo, busca cambios en tamaño, forma o piel</li>
+        <li><strong>Palpación:</strong> Acostada, con movimientos circulares revisa todo el seno y axila</li>
+        <li><strong>Presión:</strong> Aprieta suavemente el pezón para detectar secreciones</li>
+      </ul>
+      
+      <h4>Señales de alerta</h4>
+      <ul>
+        <li>Bultos o engrosamientos</li>
+        <li>Cambios en el tamaño o forma</li>
+        <li>Hundimientos o arrugas en la piel</li>
+        <li>Secreción por el pezón</li>
+        <li>Dolor persistente</li>
+        <li>Enrojecimiento o descamación</li>
+      </ul>
+      
+      <h4>Exámenes profesionales</h4>
+      <ul>
+        <li><strong>Mamografía:</strong> A partir de los 40-45 años anual</li>
+        <li><strong>Ecografía mamaria:</strong> Complementa la mamografía, especialmente en mamas densas</li>
+        <li><strong>Resonancia magnética:</strong> Para casos de alto riesgo</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Recuerda:</strong> La mayoría de los bultos mamarios no son cancerosos, pero siempre deben ser evaluados por un médico.
+      </div>
+    `
+  },
+  'cambios-emocionales': {
+    titulo: 'Cambios emocionales durante el SPM',
+    contenido: `
+      <p>Los cambios emocionales son uno de los síntomas más comunes del síndrome premenstrual, afectando a aproximadamente el 75% de las mujeres en edad reproductiva.</p>
+      
+      <h4>Síntomas emocionales comunes</h4>
+      <ul>
+        <li>Irritabilidad y cambios bruscos de humor</li>
+        <li>Tristeza, llanto fácil o sentimientos de desesperanza</li>
+        <li>Ansiedad y tensión</li>
+        <li>Dificultad para concentrarse</li>
+        <li>Fatiga y letargo</li>
+        <li>Alteraciones del sueño (insomnio o somnolencia excesiva)</li>
+      </ul>
+      
+      <h4>Causas</h4>
+      <p>Estos cambios se deben principalmente a fluctuaciones hormonales durante el ciclo menstrual, específicamente:</p>
+      <ul>
+        <li>Descenso de los niveles de estrógeno y progesterona</li>
+        <li>Alteraciones en los neurotransmisores como la serotonina</li>
+        <li>Factores psicosociales y de estrés</li>
+      </ul>
+      
+      <h4>Estrategias de manejo</h4>
+      <ul>
+        <li><strong>Ejercicio regular:</strong> Libera endorfinas que mejoran el estado de ánimo</li>
+        <li><strong>Alimentación balanceada:</strong> Reduce azúcares refinados y aumenta proteínas</li>
+        <li><strong>Técnicas de relajación:</strong> Meditación, yoga o respiración profunda</li>
+        <li><strong>Sueño adecuado:</strong> 7-8 horas por noche</li>
+        <li><strong>Suplementos:</strong> Vitamina B6, calcio y magnesio pueden ayudar</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Cuándo buscar ayuda:</strong> Si los síntomas interfieren significativamente con tu vida diaria, consulta a un profesional de la salud.
+      </div>
+    `
+  },
+  'colicos': {
+    titulo: 'Cólicos menstruales',
+    contenido: `
+      <p>Los cólicos menstruales (dismenorrea) afectan a más del 50% de las mujeres en edad reproductiva y pueden variar desde molestias leves hasta dolor incapacitante.</p>
+      
+      <h4>Tipos de cólicos</h4>
+      <ul>
+        <li><strong>Dismenorrea primaria:</strong> Cólicos sin causa patológica, comunes en adolescentes</li>
+        <li><strong>Dismenorrea secundaria:</strong> Causada por condiciones médicas como endometriosis o miomas</li>
+      </ul>
+      
+      <h4>Causas del dolor</h4>
+      <ul>
+        <li>Contracciones uterinas para expulsar el endometrio</li>
+        <li>Niveles elevados de prostaglandinas (sustancias que provocan inflamación)</li>
+        <li>Reducción del flujo sanguíneo al útero</li>
+      </ul>
+      
+      <h4>Alivio natural</h4>
+      <ul>
+        <li><strong>Calor local:</strong> Bolsa de agua caliente en el abdomen bajo</li>
+        <li><strong>Ejercicio suave:</strong> Caminata, yoga o estiramientos</li>
+        <li><strong>Masajes abdominales:</strong> Movimientos circulares suaves</li>
+        <li><strong>Infusiones:</strong> Manzanilla, jengibre o canela</li>
+        <li><strong>Baños tibios:</strong> Relajan la musculatura</li>
+      </ul>
+      
+      <h4>Tratamiento médico</h4>
+      <ul>
+        <li>Antiinflamatorios no esteroideos (ibuprofeno, naproxeno)</li>
+        <li>Anticonceptivos hormonales (regulan el ciclo y reducen el dolor)</li>
+        <li>Analgésicos para dolor severo</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Consulta a tu médico si:</strong> El dolor es incapacitante, no mejora con medicamentos o aparece después de años sin dolor menstrual.
+      </div>
+    `
+  },
+  'medidas-spm': {
+    titulo: 'Medidas para el síndrome premenstrual',
+    contenido: `
+      <p>El síndrome premenstrual (SPM) incluye una variedad de síntomas físicos y emocionales que ocurren durante la segunda mitad del ciclo menstrual.</p>
+      
+      <h4>Modificaciones dietéticas</h4>
+      <ul>
+        <li><strong>Comidas pequeñas y frecuentes:</strong> Evitan cambios bruscos de azúcar en sangre</li>
+        <li><strong>Reducir sal:</strong> Disminuye la retención de líquidos</li>
+        <li><strong>Limitar cafeína y alcohol:</strong> Reducen la irritabilidad y la tensión mamaria</li>
+        <li><strong>Aumentar calcio:</strong> Lácteos, vegetales verdes y almendras</li>
+        <li><strong>Consumir carbohidratos complejos:</strong> Avena, arroz integral, pan integral</li>
+      </ul>
+      
+      <h4>Suplementos que pueden ayudar</h4>
+      <ul>
+        <li><strong>Calcio:</strong> 1200 mg diarios</li>
+        <li><strong>Magnesio:</strong> 400 mg diarios</li>
+        <li><strong>Vitamina B6:</strong> 50-100 mg diarios</li>
+        <li><strong>Vitamina E:</strong> 400 UI diarias</li>
+        <li><strong>Aceite de onagra:</strong> Para la sensibilidad mamaria</li>
+      </ul>
+      
+      <h4>Actividad física</h4>
+      <ul>
+        <li>Ejercicio aeróbico regular (30 minutos, 3-5 veces por semana)</li>
+        <li>Yoga o pilates para flexibilidad y relajación</li>
+        <li>Caminatas diarias para reducir el estrés</li>
+      </ul>
+      
+      <h4>Manejo del estrés</h4>
+      <ul>
+        <li>Técnicas de respiración profunda</li>
+        <li>Meditación o mindfulness</li>
+        <li>Mantener un diario de síntomas</li>
+        <li>Terapia cognitivo-conductual si es necesario</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Consejo práctico:</strong> Lleva un calendario menstrual para anticipar los días de SPM y planificar actividades relajantes.
+      </div>
+    `
+  },
+  'hidratacion': {
+    titulo: 'Hidratación durante el SPM',
+    contenido: `
+      <p>Una adecuada hidratación es crucial durante el síndrome premenstrual para contrarrestar la retención de líquidos y mejorar los síntomas generales.</p>
+      
+      <h4>¿Por qué es importante?</h4>
+      <ul>
+        <li>Reduce la hinchazón abdominal</li>
+        <li>Mejora la función intestinal (combate el estreñimiento)</li>
+        <li>Ayuda a eliminar toxinas</li>
+        <li>Mejora la circulación sanguínea</li>
+        <li>Reduce los dolores de cabeza</li>
+      </ul>
+      
+      <h4>¿Cuánta agua necesitas?</h4>
+      <p>Recomendaciones generales:</p>
+      <ul>
+        <li>6-8 vasos de agua al día (1.5-2 litros)</li>
+        <li>Aumentar si realizas actividad física</li>
+        <li>Escuchar las señales de sed de tu cuerpo</li>
+      </ul>
+      
+      <h4>Fuentes de hidratación adicionales</h4>
+      <ul>
+        <li><strong>Infusiones herbales:</strong> Manzanilla, menta, jengibre</li>
+        <li><strong>Agua con sabores naturales:</strong> Limón, pepino, frutas</li>
+        <li><strong>Caldos vegetales:</strong> Bajos en sodio</li>
+        <li><strong>Frutas y verduras:</strong> Sandía, pepino, naranjas, apio</li>
+      </ul>
+      
+      <h4>Bebidas a limitar</h4>
+      <ul>
+        <li><strong>Bebidas con cafeína:</strong> Aumentan la deshidratación</li>
+        <li><strong>Refrescos azucarados:</strong> Empeoran la hinchazón</li>
+        <li><strong>Alcohol:</strong> Deshidrata y afecta el estado de ánimo</li>
+        <li><strong>Bebidas muy saladas:</strong> Aumentan la retención de líquidos</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Truco:</strong> Lleva siempre contigo una botella de agua y establece recordatorios para beber regularmente.
+      </div>
+    `
+  },
+  'hinchazon': {
+    titulo: 'Hinchazón durante el SPM',
+    contenido: `
+      <p>La hinchazón o distensión abdominal es uno de los síntomas físicos más molestos del síndrome premenstrual, afectando hasta al 85% de las mujeres.</p>
+      
+      <h4>Causas de la hinchazón</h4>
+      <ul>
+        <li>Retención de líquidos por cambios hormonales</li>
+        <li>Ralentización del tracto gastrointestinal</li>
+        <li>Aumento de gases intestinales</li>
+        <li>Cambios en el apetito y antojos de alimentos salados</li>
+      </ul>
+      
+      <h4>Estrategias para reducir la hinchazón</h4>
+      <ul>
+        <li><strong>Reducir el sodio:</strong> Evita alimentos procesados, enlatados y embutidos</li>
+        <li><strong>Aumentar el potasio:</strong> Plátanos, aguacates, espinacas</li>
+        <li><strong>Comer fibra gradualmente:</strong> Para evitar estreñimiento sin aumentar gases</li>
+        <li><strong>Ejercicio regular:</strong> Estimula la circulación y reduce retención</li>
+        <li><strong>Ropa cómoda:</strong> Evita prendas ajustadas en la cintura</li>
+      </ul>
+      
+      <h4>Alimentos que ayudan</h4>
+      <ul>
+        <li><strong>Diuréticos naturales:</strong> Pepino, apio, espárragos, piña</li>
+        <li><strong>Probióticos:</strong> Yogur, kéfir, alimentos fermentados</li>
+        <li><strong>Infusiones:</strong> Diente de león, perejil, té verde</li>
+        <li><strong>Alimentos ricos en magnesio:</strong> Nueces, semillas, chocolate oscuro</li>
+      </ul>
+      
+      <h4>Cuándo preocuparse</h4>
+      <p>Consulta a tu médico si la hinchazón:</p>
+      <ul>
+        <li>Es severa y persistente</li>
+        <li>Se acompaña de aumento de peso rápido</li>
+        <li>Viene con dolor abdominal intenso</li>
+        <li>No mejora después de la menstruación</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Consejo:</strong> Come porciones más pequeñas y frecuentes en lugar de tres comidas grandes para reducir la distensión abdominal.
+      </div>
+    `
+  },
+  'tecnicas-relajacion': {
+    titulo: 'Técnicas de relajación para el SPM',
+    contenido: `
+      <p>Las técnicas de relajación pueden ser herramientas poderosas para manejar el estrés, la ansiedad y los cambios emocionales asociados con el síndrome premenstrual.</p>
+      
+      <h4>Respiración profunda</h4>
+      <p>Técnica básica para calmar el sistema nervioso:</p>
+      <ul>
+        <li>Siéntate cómodamente o recuéstate</li>
+        <li>Inhala lentamente por la nariz contando hasta 4</li>
+        <li>Mantén la respiración contando hasta 4</li>
+        <li>Exhala lentamente por la boca contando hasta 6</li>
+        <li>Repite durante 5-10 minutos</li>
+      </ul>
+      
+      <h4>Relajación muscular progresiva</h4>
+      <p>Tensión y relajación sistemática de grupos musculares:</p>
+      <ul>
+        <li>Comienza por los pies y sube gradualmente hasta la cabeza</li>
+        <li>Tensa cada grupo muscular durante 5 segundos</li>
+        <li>Relaja completamente durante 15-30 segundos</li>
+        <li>Nota la diferencia entre tensión y relajación</li>
+        <li>Duración total: 15-20 minutos</li>
+      </ul>
+      
+      <h4>Meditación mindfulness</h4>
+      <ul>
+        <li>Enfócate en el momento presente sin juicios</li>
+        <li>Observa tus pensamientos y emociones sin aferrarte a ellos</li>
+        <li>Comienza con sesiones cortas de 5-10 minutos</li>
+        <li>Usa aplicaciones guiadas si eres principiante</li>
+      </ul>
+      
+      <h4>Visualización guiada</h4>
+      <ul>
+        <li>Cierra los ojos y visualiza un lugar tranquilo</li>
+        <li>Involucra todos los sentidos en la visualización</li>
+        <li>Imagina que estás liberando tensión y malestar</li>
+        <li>Practica durante 10-15 minutos</li>
+      </ul>
+      
+      <h4>Yoga y estiramientos</h4>
+      <ul>
+        <li>Posturas suaves como "postura del niño" o "postura del gato"</li>
+        <li>Enfócate en la conexión entre respiración y movimiento</li>
+        <li>Evita posturas invertidas durante la menstruación</li>
+        <li>Clases específicas para SPM disponibles en línea</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Consejo:</strong> Practica estas técnicas regularmente, no solo durante el SPM, para desarrollar habilidades que puedas usar cuando más las necesites.
+      </div>
+    `
+  },
+  'pastillas-anticonceptivas': {
+    titulo: 'Pastillas anticonceptivas',
+    contenido: `
+      <p>Las pastillas anticonceptivas son uno de los métodos reversibles más efectivos cuando se usan correctamente, con una eficacia del 99%.</p>
+      
+      <h4>Tipos de pastillas</h4>
+      <ul>
+        <li><strong>Combinadas:</strong> Contienen estrógeno y progestágeno</li>
+        <li><strong>Minipíldora:</strong> Solo contienen progestágeno</li>
+        <li><strong>Monofásicas:</strong> Misma dosis hormonal todo el mes</li>
+        <li><strong>Multifásicas:</strong> Dosis variable durante el ciclo</li>
+      </ul>
+      
+      <h4>Uso correcto</h4>
+      <ul>
+        <li>Tomar a la misma hora todos los días</li>
+        <li>Usar método de respaldo si se olvida una pastilla</li>
+        <li>Seguir las instrucciones específicas del tipo de pastilla</li>
+        <li>Consultar con médico sobre interacciones con otros medicamentos</li>
+      </ul>
+      
+      <h4>Beneficios adicionales</h4>
+      <ul>
+        <li>Regula ciclos menstruales irregulares</li>
+        <li>Reduce el flujo menstrual y los cólicos</li>
+        <li>Mejora el acné en muchos casos</li>
+        <li>Disminuye el riesgo de cáncer de ovario y endometrio</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Importante:</strong> Las pastillas anticonceptivas no protegen contra enfermedades de transmisión sexual.
+      </div>
+    `
+  },
+  'condon-masculino': {
+    titulo: 'Condón masculino',
+    contenido: `
+      <p>El condón masculino es un método de barrera que proporciona doble protección: anticoncepción y prevención de ITS.</p>
+      
+      <h4>Ventajas</h4>
+      <ul>
+        <li>Protege contra embarazos no planificados</li>
+        <li>Reduce el riesgo de ITS incluido VIH</li>
+        <li>Disponible sin receta médica</li>
+        <li>Fácil de usar y transportar</li>
+        <li>Sin efectos hormonales</li>
+      </ul>
+      
+      <h4>Uso correcto</h4>
+      <ul>
+        <li>Verificar fecha de expiración</li>
+        <li>Abrir el empaque con cuidado (no con dientes)</li>
+        <li>Colocar antes de cualquier contacto genital</li>
+        <li>Dejar espacio en la punta para el semen</li>
+        <li>Retirar inmediatamente después de la eyaculación</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Dato:</strong> Los condones de látex son los más efectivos para prevenir ITS. Usa lubricantes a base de agua para no dañar el látex.
+      </div>
+    `
+  },
+  'condon-femenino': {
+    titulo: 'Condón femenino',
+    contenido: `
+      <p>El condón femenino es una funda que se coloca dentro de la vagina, ofreciendo a las mujeres control sobre su protección.</p>
+      
+      <h4>Características</h4>
+      <ul>
+        <li>Bolsa de poliuretano con dos anillos flexibles</li>
+        <li>Se puede colocar hasta 8 horas antes de la relación</li>
+        <li>Protege vagina, cervix y parte externa de los genitales</li>
+        <li>Compatible con todos los lubricantes</li>
+      </ul>
+      
+      <h4>Ventajas</h4>
+      <ul>
+        <li>Control femenino de la protección</li>
+        <li>No requiere erección para su colocación</li>
+        <li>Protege contra ITS y embarazos</li>
+        <li>Puede usarse durante la menstruación</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Consejo:</strong> Practica la colocación antes de usarlo en una relación sexual para ganar confianza.
+      </div>
+    `
+  },
+  'diu': {
+    titulo: 'Dispositivo intrauterino (DIU)',
+    contenido: `
+      <p>El DIU es un método anticonceptivo de larga duración altamente efectivo que se coloca dentro del útero.</p>
+      
+      <h4>Tipos de DIU</h4>
+      <ul>
+        <li><strong>DIU hormonal:</strong> Libera progestágeno, dura 3-8 años</li>
+        <li><strong>DIU de cobre:</strong> No hormonal, dura hasta 10-12 años</li>
+      </ul>
+      
+      <h4>Ventajas</h4>
+      <ul>
+        <li>Efectividad superior al 99%</li>
+        <li>No requiere acción diaria o coital</li>
+        <li>Fertilidad retorna inmediatamente tras su retiro</li>
+        <li>DIU hormonal reduce el sangrado menstrual</li>
+      </ul>
+      
+      <h4>Consideraciones</h4>
+      <ul>
+        <li>Debe ser insertado y removido por un profesional</li>
+        <li>Puede causar cólicos inicialmente</li>
+        <li>No protege contra ITS</li>
+        <li>Requiere control periódico de la posición</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Ideal para:</strong> Mujeres que buscan un método anticonceptivo reversible de larga duración y alta efectividad.
+      </div>
+    `
+  },
+  'inyeccion-hormonal': {
+    titulo: 'Inyección hormonal',
+    contenido: `
+      <p>La inyección anticonceptiva proporciona protección prolongada con una sola aplicación cada 1-3 meses.</p>
+      
+      <h4>Tipos disponibles</h4>
+      <ul>
+        <li><strong>Anticonceptivo inyectable mensual:</strong> Combinado (estrógeno + progestágeno)</li>
+        <li><strong>Anticonceptivo inyectable trimestral:</strong> Solo progestágeno</li>
+      </ul>
+      
+      <h4>Ventajas</h4>
+      <ul>
+        <li>Alta efectividad (99%)</li>
+        <li>No requiere acción diaria</li>
+        <li>Discreto</li>
+        <li>Puede reducir cólicos menstruales</li>
+      </ul>
+      
+      <h4>Consideraciones</h4>
+      <ul>
+        <li>Requiere visitas regulares al médico para aplicación</li>
+        <li>Puede causar irregularidades menstruales</li>
+        <li>La fertilidad puede tardar en regresar después de suspender</li>
+        <li>No protege contra ITS</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Importante:</strong> Es fundamental recibir las inyecciones puntualmente para mantener la efectividad.
+      </div>
+    `
+  },
+  'implante-subdermico': {
+    titulo: 'Implante subdérmico',
+    contenido: `
+      <p>El implante anticonceptivo es una varilla pequeña y flexible que se coloca bajo la piel del brazo y libera hormonas continuamente.</p>
+      
+      <h4>Características</h4>
+      <ul>
+        <li>Varilla de aproximadamente 4 cm de largo</li>
+        <li>Libera progestágeno de forma continua</li>
+        <li>Duración: 3-5 años según el tipo</li>
+        <li>Efectividad: 99.9%</li>
+      </ul>
+      
+      <h4>Ventajas</h4>
+      <ul>
+        <li>Máxima efectividad anticonceptiva</li>
+        <li>Larga duración sin necesidad de acción diaria</li>
+        <li>Fertilidad retorna rápidamente tras su remoción</li>
+        <li>Discreto e invisible</li>
+      </ul>
+      
+      <h4>Consideraciones</h4>
+      <ul>
+        <li>Debe ser insertado y removido por profesional capacitado</li>
+        <li>Puede causar irregularidades menstruales</li>
+        <li>No protege contra ITS</li>
+        <li>Posibles efectos secundarios hormonales</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Ideal para:</strong> Mujeres que buscan máxima efectividad con mínima intervención diaria.
+      </div>
+    `
+  },
+  'flujo-transparente': {
+    titulo: 'Flujo vaginal transparente',
+    contenido: `
+      <p>El flujo vaginal transparente y elástico, similar a la clara de huevo, es un signo normal de fertilidad que indica el período ovulatorio.</p>
+      
+      <h4>Características del flujo fértil</h4>
+      <ul>
+        <li>Consistencia: Elástica, se estira entre los dedos</li>
+        <li>Color: Transparente o blanquecino muy claro</li>
+        <li>Cantidad: Aumenta notablemente</li>
+        <li>Sensación: Humedad vaginal aumentada</li>
+      </ul>
+      
+      <h4>¿Qué indica?</h4>
+      <ul>
+        <li>Período máximo de fertilidad</li>
+        <li>Niveles altos de estrógeno</li>
+        <li>Óvulo listo para ser fecundado</li>
+        <li>Entorno favorable para los espermatozoides</li>
+      </ul>
+      
+      <h4>Duración</h4>
+      <ul>
+        <li>Aparece 1-2 días antes de la ovulación</li>
+        <li>Dura aproximadamente 3-4 días</li>
+        <li>Desaparece después de la ovulación</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Para buscar embarazo:</strong> Este es el momento ideal para mantener relaciones sexuales.
+        <strong>Para evitar embarazo:</strong> Usa protección adicional durante estos días.
+      </div>
+    `
+  },
+  'flujo-blanco-espeso': {
+    titulo: 'Flujo blanco y espeso',
+    contenido: `
+      <p>El flujo blanco, cremoso y espeso es normal durante la fase lútea del ciclo menstrual (después de la ovulación).</p>
+      
+      <h4>Características</h4>
+      <ul>
+        <li>Consistencia: Cremosa, similar a una loción</li>
+        <li>Color: Blanco o blanco amarillento</li>
+        <li>Cantidad: Moderada a escasa</li>
+        <li>Olor: Leve o inodoro</li>
+      </ul>
+      
+      <h4>¿Por qué ocurre?</h4>
+      <ul>
+        <li>Aumento de progesterona después de la ovulación</li>
+        <li>Función protectora del cuello uterino</li>
+        <li>Creación de barrera contra infecciones</li>
+        <li>Preparación del útero para posible embarazo</li>
+      </ul>
+      
+      <h4>Cuándo es normal</h4>
+      <ul>
+        <li>Después de la ovulación hasta la menstruación</li>
+        <li>Durante el embarazo</li>
+        <li>Al tomar anticonceptivos hormonales</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Señal de alerta:</strong> Si el flujo blanco viene con picazón, ardor, mal olor o cambios de color, podría indicar infección.
+      </div>
+    `
+  },
+  'flujo-marron': {
+    titulo: 'Flujo marrón',
+    contenido: `
+      <p>El flujo marrón generalmente indica sangre vieja que está siendo expulsada del útero de manera lenta.</p>
+      
+      <h4>Causas comunes</h4>
+      <ul>
+        <li><strong>Final de la menstruación:</strong> Restos de endometrio</li>
+        <li><strong>Sangrado de implantación:</strong> En caso de embarazo temprano</li>
+        <li><strong>Ovulación:</strong> Pequeño sangrado por ruptura folicular</li>
+        <li><strong>Anticonceptivos hormonales:</strong> Sangrado intermenstrual</li>
+      </ul>
+      
+      <h4>Características según la causa</h4>
+      <ul>
+        <li><strong>Post-menstruación:</strong> Pocos días, sin otros síntomas</li>
+        <li><strong>Implantación:</strong> 6-12 días después de ovulación, escaso</li>
+        <li><strong>Ovulación:</strong> Coincide con mitad del ciclo, mínimo</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Consulta médica si:</strong> El flujo marrón es persistente, abundante, viene con dolor o aparece después de la menopausia.
+      </div>
+    `
+  },
+  'flujo-amarillento': {
+    titulo: 'Flujo amarillento',
+    contenido: `
+      <p>El flujo amarillento puede ser normal o indicar infección, dependiendo de sus características acompañantes.</p>
+      
+      <h4>Cuándo puede ser normal</h4>
+      <ul>
+        <li>Color amarillo muy pálido</li>
+        <li>Consistencia normal</li>
+        <li>Sin olor desagradable</li>
+        <li>Sin otros síntomas como picazón o ardor</li>
+      </ul>
+      
+      <h4>Cuándo indica posible infección</h4>
+      <ul>
+        <li><strong>Amarillo intenso o verdoso:</strong> Posible tricomoniasis</li>
+        <li><strong>Consistencia grumosa:</strong> Candidiasis</li>
+        <li><strong>Olor fuerte o fétido:</strong> Vaginosis bacteriana</li>
+        <li><strong>Acompañado de dolor o ardor:</strong> Infección o ITS</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Importante:</strong> Nunca te automediques. Consulta a tu ginecólogo para diagnóstico y tratamiento adecuado.
+      </div>
+    `
+  },
+  'flujo-rosado': {
+    titulo: 'Flujo rosado',
+    contenido: `
+      <p>El flujo rosado indica una pequeña cantidad de sangre fresca mezclada con flujo vaginal normal.</p>
+      
+      <h4>Causas comunes</h4>
+      <ul>
+        <li><strong>Inicio o final de la menstruación:</strong> Sangrado leve</li>
+        <li><strong>Ovulación:</strong> Pequeño sangrado por ruptura folicular</li>
+        <li><strong>Sangrado de implantación:</strong> En embarazo temprano</li>
+        <li><strong>Relaciones sexuales:</strong> Pequeñas lesiones por fricción</li>
+        <li><strong>Anticonceptivos hormonales:</strong> Sangrado intermenstrual</li>
+      </ul>
+      
+      <h4>Características del sangrado de implantación</h4>
+      <ul>
+        <li>Color: Rosa claro o marrón claro</li>
+        <li>Cantidad: Muy escasa, manchas leves</li>
+        <li>Duración: 1-2 días</li>
+        <li>Momento: 6-12 días después de la ovulación</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Consulta médica si:</strong> El flujo rosado es persistente, se vuelve rojo intenso, viene con dolor o fiebre.
+      </div>
+    `
+  },
+  'flujo-mal-olor': {
+    titulo: 'Flujo con mal olor',
+    contenido: `
+      <p>El flujo vaginal con olor desagradable generalmente indica una infección que requiere atención médica.</p>
+      
+      <h4>Principales causas</h4>
+      <ul>
+        <li><strong>Vaginosis bacteriana:</strong> Olor a pescado, especialmente después de relaciones</li>
+        <li><strong>Tricomoniasis:</strong> Olor fuerte, flujo amarillo-verdoso</li>
+        <li><strong>Candidiasis:</strong> Generalmente sin olor fuerte, pero puede haber olor a levadura</li>
+        <li><strong>Retención de tampón o cuerpo extraño:</strong> Olor muy fétido</li>
+      </ul>
+      
+      <h4>¿Qué hacer?</h4>
+      <ul>
+        <li>Consultar al ginecólogo para diagnóstico preciso</li>
+        <li>No usar duchas vaginales (empeoran el problema)</li>
+        <li>Evitar relaciones sexuales hasta el tratamiento</li>
+        <li>Informar a la pareja si es ITS para tratamiento conjunto</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Urgente:</strong> Si el mal olor viene con fiebre, dolor abdominal intenso o malestar general, busca atención médica inmediata.
+      </div>
+    `
+  },
+  'uso-condon': {
+    titulo: 'Uso correcto del condón',
+    contenido: `
+      <p>El uso correcto del condón es esencial para maximizar su efectividad en la prevención de embarazos e ITS.</p>
+      
+      <h4>Pasos para uso correcto</h4>
+      <ul>
+        <li>Verificar fecha de expiración del condón</li>
+        <li>Abrir el empaque con cuidado, sin usar dientes o objetos punzantes</li>
+        <li>Colocar el condón antes de cualquier contacto genital</li>
+        <li>Pellizcar la punta para eliminar aire y dejar espacio para el semen</li>
+        <li>Desenrollar completamente sobre el pene erecto</li>
+        <li>Usar lubricante a base de agua si es necesario</li>
+        <li>Retirar inmediatamente después de la eyaculación, sosteniendo la base</li>
+        <li>Desechar correctamente (no reutilizar)</li>
+      </ul>
+      
+      <h4>Errores comunes</h4>
+      <ul>
+        <li>No revisar fecha de expiración</li>
+        <li>Usar dos condones a la vez (aumenta la fricción y rotura)</li>
+        <li>Usar lubricantes a base de aceite con condones de látex</li>
+        <li>Guardar condones en lugares calurosos o con luz directa</li>
+        <li>Reutilizar condones</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Dato importante:</strong> Los condones tienen una efectividad del 98% cuando se usan correctamente en cada relación sexual.
+      </div>
+    `
+  },
+  'lubricantes-seguros': {
+    titulo: 'Lubricantes seguros',
+    contenido: `
+      <p>El uso de lubricantes puede mejorar la experiencia sexual, pero es importante elegir productos compatibles con los métodos de protección.</p>
+      
+      <h4>Tipos de lubricantes</h4>
+      <ul>
+        <li><strong>Base de agua:</strong> Compatibles con todos los condones y juguetes sexuales</li>
+        <li><strong>Base de silicona:</strong> Duraderos, ideales para sexo acuático, no compatibles con juguetes de silicona</li>
+        <li><strong>Base de aceite:</strong> NO compatibles con condones de látex (los debilitan)</li>
+      </ul>
+      
+      <h4>Características de lubricantes seguros</h4>
+      <ul>
+        <li>pH balanceado para la zona genital</li>
+        <li>Sin parabenos, glicerina o espermicidas (pueden causar irritación)</li>
+        <li>Hipoalergénicos</li>
+        <li>Sin aromas o sabores artificiales intensos</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Consejo:</strong> Si experimentas sequedad vaginal persistente, consulta a tu ginecólogo ya que puede indicar desequilibrios hormonales.
+      </div>
+    `
+  },
+  'pareja-estable': {
+    titulo: 'Pareja estable y salud sexual',
+    contenido: `
+      <p>Mantener una relación estable y monógama con una pareja que también se ha realizado pruebas de ITS reduce significativamente el riesgo de infecciones.</p>
+      
+      <h4>Ventajas de la monogamia mutua</h4>
+      <ul>
+        <li>Reducción del riesgo de ITS</li>
+        <li>Mayor intimidad y confianza</li>
+        <li>Posibilidad de considerar otros métodos anticonceptivos</li>
+        <li>Comunicación más abierta sobre salud sexual</li>
+      </ul>
+      
+      <h4>Conversaciones importantes</h4>
+      <ul>
+        <li>Historial sexual previo</li>
+        <li>Resultados de pruebas de ITS</li>
+        <li>Expectativas sobre fidelidad</li>
+        <li>Métodos anticonceptivos preferidos</li>
+        <li>Frecuencia de revisiones médicas</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Recuerda:</strong> La confianza se construye con acciones. Consideren realizarse pruebas de ITS juntos al inicio de la relación.
+      </div>
+    `
+  },
+  'pruebas-periodicas': {
+    titulo: 'Pruebas periódicas de ITS',
+    contenido: `
+      <p>Las pruebas regulares de infecciones de transmisión sexual son una parte fundamental del cuidado de la salud sexual.</p>
+      
+      <h4>¿Quiénes deben hacerse pruebas?</h4>
+      <ul>
+        <li>Personas sexualmente activas</li>
+        <li>Antes de comenzar una nueva relación sexual</li>
+        <li>Si se tienen múltiples parejas sexuales</li>
+        <li>Si se presentan síntomas de ITS</li>
+        <li>Embarazadas (en el primer control prenatal)</li>
+      </ul>
+      
+      <h4>Frecuencia recomendada</h4>
+      <ul>
+        <li><strong>Anualmente:</strong> Todas las personas sexualmente activas menores de 25 años</li>
+        <li><strong>Cada 6 meses:</strong> Personas con múltiples parejas o relaciones no monógamas</li>
+        <li><strong>Según factores de riesgo:</strong> Hombres que tienen sexo con hombres, trabajadores sexuales</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Importante:</strong> Muchas ITS son asintomáticas. La única forma de saber con seguridad es mediante pruebas médicas.
+      </div>
+    `
+  },
+  'no-sexo-alcohol-drogas': {
+    titulo: 'Sexo bajo efectos de alcohol/drogas',
+    contenido: `
+      <p>El consumo de alcohol y drogas puede afectar negativamente la toma de decisiones y aumentar conductas sexuales de riesgo.</p>
+      
+      <h4>Riesgos asociados</h4>
+      <ul>
+        <li>Disminución del juicio para usar protección</li>
+        <li>Mayor probabilidad de relaciones sexuales no planificadas</li>
+        <li>Posibilidad de relaciones no consensuadas</li>
+        <li>Olvido del uso correcto de anticonceptivos</li>
+        <li>Mayor riesgo de ITS y embarazos no planificados</li>
+      </ul>
+      
+      <h4>Consejos de seguridad</h4>
+      <ul>
+        <li>Establecer límites antes de consumir cualquier sustancia</li>
+        <li>Llevar siempre tu propia protección</li>
+        <li>Designar a un amigo sobrio para situaciones sociales</li>
+        <li>Conocer tus límites de consumo</li>
+        <li>Tener un plan de regreso a casa seguro</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Recuerda:</strong> El consentimiento sexual dado bajo efectos de sustancias puede no ser válido legalmente en muchas jurisdicciones.
+      </div>
+    `
+  },
+  'consentimiento-siempre': {
+    titulo: 'Consentimiento sexual',
+    contenido: `
+      <p>El consentimiento sexual es un acuerdo voluntario, entusiasta y reversible para participar en actividad sexual.</p>
+      
+      <h4>Características del consentimiento válido</h4>
+      <ul>
+        <li><strong>Voluntario:</strong> Sin coerción, presión o manipulación</li>
+        <li><strong>Entusiasta:</strong> No solo "sí", sino "¡sí, quiero!"</li>
+        <li><strong>Reversible:</strong> Puede retirarse en cualquier momento</li>
+        <li><strong>Informado:</strong> Todas las partes entienden lo que están acordando</li>
+        <li><strong>Específico:</strong> El consentimiento para una actividad no implica consentimiento para otras</li>
+      </ul>
+      
+      <h4>¿Cómo practicar el consentimiento?</h4>
+      <ul>
+        <li>Preguntar explícitamente antes de avanzar</li>
+        <li>Escuchar respuestas verbales y no verbales</li>
+        <li>Respetar un "no" inmediatamente</li>
+        <li>Verificar regularmente durante la actividad sexual</li>
+        <li>Comunicar tus propios límites claramente</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>F.R.I.E.S.:</strong> Recuerda que el consentimiento debe ser Freely given (dado libremente), Reversible (reversible), Informed (informado), Enthusiastic (entusiasta) y Specific (específico).
+      </div>
+    `
+  },
+  'retraso-menstrual': {
+    titulo: 'Retraso menstrual',
+    contenido: `
+      <p>El retraso menstrual es a menudo el primer signo que lleva a una mujer a sospechar un posible embarazo.</p>
+      
+      <h4>Causas de retraso menstrual (además de embarazo)</h4>
+      <ul>
+        <li>Estrés físico o emocional</li>
+        <li>Cambios significativos de peso</li>
+        <li>Exceso de ejercicio físico</li>
+        <li>Desórdenes alimenticios</li>
+        <li>Síndrome de ovario poliquístico</li>
+        <li>Problemas tiroideos</li>
+        <li>Perimenopausia</li>
+        <li>Suspensión de anticonceptivos hormonales</li>
+      </ul>
+      
+      <h4>¿Cuándo hacer una prueba de embarazo?</h4>
+      <ul>
+        <li>Después de 1 semana de retraso para mayor precisión</li>
+        <li>Con la primera orina de la mañana (mayor concentración)</li>
+        <li>Siguiendo cuidadosamente las instrucciones del test</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Consulta médica si:</strong> Tu período se retrasa más de 3 meses sin causa aparente, o si experimentas otros síntomas preocupantes.
+      </div>
+    `
+  },
+  'sensibilidad-senos': {
+    titulo: 'Sensibilidad en senos',
+    contenido: `
+      <p>La sensibilidad, dolor o hinchazón en los senos es un síntoma temprano común del embarazo debido a cambios hormonales.</p>
+      
+      <h4>Características en embarazo temprano</h4>
+      <ul>
+        <li>Sensación de pesadez o plenitud</li>
+        <li>Hormigueo o sensibilidad al tacto</li>
+        <li>Oscurecimiento de las areolas</li>
+        <li>Aparición de pequeños bultos (glándulas de Montgomery)</li>
+        <li>Venas más visibles en la piel del seno</li>
+      </ul>
+      
+      <h4>Diferencias con sensibilidad premenstrual</h4>
+      <ul>
+        <li><strong>Embarazo:</strong> Suele ser más intensa y persistente</li>
+        <li><strong>SPM:</strong> Generalmente mejora con la llegada de la menstruación</li>
+        <li><strong>Embarazo:</strong> Puede venir con otros síntomas como náuseas</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Alivio:</strong> Usar un sostén de soporte incluso para dormir, aplicar compresas tibias o frías, y masajes suaves pueden ayudar.
+      </div>
+    `
+  },
+  'nauseas': {
+    titulo: 'Náuseas matutinas',
+    contenido: `
+      <p>Las náuseas y vómitos del embarazo, conocidas como "náuseas matutinas", afectan aproximadamente al 70-80% de las embarazadas.</p>
+      
+      <h4>Características</h4>
+      <ul>
+        <li>Pueden ocurrir en cualquier momento del día, no solo por la mañana</li>
+        <li>Generalmente comienzan alrededor de la semana 6</li>
+        <li>Suelen mejorar después de la semana 12-14</li>
+        <li>Pueden variar desde leves molestias hasta vómitos incapacitantes</li>
+      </ul>
+      
+      <h4>Consejos para aliviar náuseas</h4>
+      <ul>
+        <li>Comer galletas saladas antes de levantarse</li>
+        <li>Comer porciones pequeñas y frecuentes</li>
+        <li>Evitar alimentos grasosos o muy condimentados</li>
+        <li>Beber líquidos entre comidas, no con las comidas</li>
+        <li>Probar jengibre (té, caramelos)</li>
+        <li>Vitamina B6 bajo supervisión médica</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Busca ayuda médica si:</strong> No puedes retener líquidos, pierdes peso, orinas poco o muy oscuro, o te sientes mareada al ponerte de pie.
+      </div>
+    `
+  },
+  'cansancio-extremo': {
+    titulo: 'Cansancio extremo en embarazo',
+    contenido: `
+      <p>La fatiga extrema es uno de los síntomas más comunes del primer trimestre del embarazo, afectando a casi todas las embarazadas.</p>
+      
+      <h4>Causas</h4>
+      <ul>
+        <li>Aumento de los niveles de progesterona</li>
+        <li>Mayor demanda metabólica</li>
+        <li>Cambios en la presión arterial y azúcar en sangre</li>
+        <li>Náuseas y vómitos que afectan la nutrición</li>
+        <li>Alteraciones del sueño</li>
+      </ul>
+      
+      <h4>Manejo de la fatiga</h4>
+      <ul>
+        <li>Descansar cuando el cuerpo lo pida</li>
+        <li>Mantener una dieta equilibrada y rica en hierro</li>
+        <li>Hacer ejercicio suave regular (caminatas)</li>
+        <li>Establecer una rutina de sueño consistente</li>
+        <li>Delegar tareas cuando sea posible</li>
+        <li>Beber suficiente agua</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Importante:</strong> La fatiga extrema que no mejora con el descanso o viene con mareos, palidez o dificultad para respirar debe ser evaluada por un médico.
+      </div>
+    `
+  },
+  'aumento-orina': {
+    titulo: 'Aumento de la frecuencia urinaria',
+    contenido: `
+      <p>La necesidad de orinar con más frecuencia es un síntoma común tanto al principio como al final del embarazo.</p>
+      
+      <h4>Causas por trimestre</h4>
+      <ul>
+        <li><strong>Primer trimestre:</strong> Aumento del flujo sanguíneo a los riñones y cambios hormonales</li>
+        <li><strong>Segundo trimestre:</strong> Suele mejorar temporalmente</li>
+        <li><strong>Tercer trimestre:</strong> Presión del útero agrandado sobre la vejiga</li>
+      </ul>
+      
+      <h4>Consejos para manejar</h4>
+      <ul>
+        <li>Vaciar completamente la vejiga al orinar (inclinarse hacia adelante)</li>
+        <li>Limitar líquidos antes de acostarse</li>
+        <li>Evitar bebidas diuréticas como café, té y refrescos</li>
+        <li>Realizar ejercicios de Kegel para fortalecer el suelo pélvico</li>
+        <li>Usar protectores diarios si hay pequeñas pérdidas</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Consulta médica si:</strong> Hay dolor o ardor al orinar, orina turbia o con sangre, fiebre o dolor lumbar, ya que podrían indicar infección urinaria.
+      </div>
+    `
+  },
+  'cambios-humor': {
+    titulo: 'Cambios de humor en el embarazo',
+    contenido: `
+      <p>Los cambios emocionales y de humor son extremadamente comunes durante el embarazo debido a fluctuaciones hormonales y factores psicológicos.</p>
+      
+      <h4>Causas</h4>
+      <ul>
+        <li>Fluctuaciones rápidas en estrógeno y progesterona</li>
+        <li>Fatiga y malestar físico</li>
+        <li>Estrés por los cambios venideros</li>
+        <li>Preocupaciones sobre la salud del bebé</li>
+        <li>Cambios en la imagen corporal</li>
+      </ul>
+      
+      <h4>Estrategias de manejo</h4>
+      <ul>
+        <li>Comunicar tus sentimientos con tu pareja, familia o amigos</li>
+        <li>Unirse a grupos de apoyo para embarazadas</li>
+        <li>Practicar técnicas de relajación como meditación o yoga prenatal</li>
+        <li>Mantener una rutina de ejercicio aprobada por el médico</li>
+        <li>Dormir suficiente y descansar cuando sea necesario</li>
+        <li>Buscar ayuda profesional si los cambios son severos</li>
+      </ul>
+      
+      <div class="consejo-destacado">
+        <strong>Importante:</strong> Si experimentas tristeza profunda, desesperanza, ansiedad extrema o pensamientos de hacerte daño, busca ayuda médica inmediatamente.
+      </div>
+    `
+  }
+};
+
+    
+
+
+const userData = JSON.parse(localStorage.getItem("user"));
+const usuarioActual = userData?.username || "Invitado";
+document.getElementById("nombreUsuario").textContent = usuarioActual;
+
+// Guardados por usuario 
+function obtenerGuardadosUsuario() {
+    const guardadosPorUsuario = JSON.parse(localStorage.getItem("guardadosPorUsuario")) || {};
+    return guardadosPorUsuario[usuarioActual] || [];
+}
+
+function guardarGuardadosUsuario(guardados) {
+    const guardadosPorUsuario = JSON.parse(localStorage.getItem("guardadosPorUsuario")) || {};
+    guardadosPorUsuario[usuarioActual] = guardados;
+    localStorage.setItem("guardadosPorUsuario", JSON.stringify(guardadosPorUsuario));
+}
+
+let guardados = obtenerGuardadosUsuario();
+
+function guardarTip(titulo, imagen) {
+    guardados.push({ titulo, imagen });
+    guardarGuardadosUsuario(guardados);
+    mostrarGuardados();
+    alert("Tip guardado: " + titulo);
+}
+
+function eliminarTip(index) {
+    guardados.splice(index, 1);
+    guardarGuardadosUsuario(guardados);
+    mostrarGuardados();
+}
+
+function mostrarGuardados() {
+    const cont = document.getElementById("listaGuardados");
+    if (guardados.length === 0) {
+        cont.innerHTML = "No tienes tips guardados aún.";
+        return;
+    }
+    cont.innerHTML = guardados.map((t, i) => `
+        <div class="item-guardado">
+            <img src="${t.imagen}" alt="${t.titulo}">
+            <span>${t.titulo}</span>
+            <button onclick="eliminarTip(${i})">🗑️</button>
+        </div>
+    `).join("");
+}
+
+    function abrirGuardados() {
+      mostrarGuardados();
+      document.getElementById("modalGuardados").style.display = "flex";
+    }
+    function cerrarGuardados() {
+      document.getElementById("modalGuardados").style.display = "none";
+    }
+
+    
+    function verMas(idContenido) {
+      const contenido = contenidoDetallado[idContenido];
+      if (contenido) {
+        document.getElementById("tituloVerMas").textContent = contenido.titulo;
+        document.getElementById("textoVerMas").innerHTML = contenido.contenido;
+        document.getElementById("modalVerMas").style.display = "flex";
+      } else {
+        //si no se encuentra el id
+        document.getElementById("tituloVerMas").textContent = "Información detallada";
+        document.getElementById("textoVerMas").innerHTML = "<p>Contenido detallado no disponible en este momento.</p>";
+        document.getElementById("modalVerMas").style.display = "flex";
+      }
+    }
+    
+    function cerrarVerMas() {
+      document.getElementById("modalVerMas").style.display = "none";
+    }
+
+    document.getElementById("logout-link").addEventListener("click", () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    alert("Sesión cerrada correctamente");
+    window.location.href = "index.html";
+  });
+  </script>
+  <script>
+  // --- Verificación de sesión ---
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (!user || !user.username) {
+    window.location.href = "index.html";
+  } else {
+    const userLink = document.getElementById("user-link");
+    if (userLink) userLink.textContent = user.username;
+  }
+
+  
+  const logoutLink = document.getElementById("logout-link");
+  if (logoutLink) {
+    logoutLink.addEventListener("click", (e) => {
+      e.preventDefault();
+
+      // Eliminar datos principales
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      localStorage.removeItem("rol");
+      localStorage.removeItem("usuarioActivo");
+
+
+
+      window.location.href = "/";
+
+
+      setTimeout(() => location.reload(true), 300);
+    });
+  }
+</script>
+
+</body>
+</html>

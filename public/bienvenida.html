@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bienvenida</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom, #ff8db3, #ffd6e0);
+      text-align: center;
+      color: #333;
+      overflow: hidden;
+    }
+
+    .contenedor {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    .onda {
+      background-color: #ff4f8b;
+      border-radius: 50% / 10%;
+      height: 200px;
+      width: 100%;
+      position: absolute;
+      z-index: 0;
+    }
+
+    .onda.arriba {
+      top: -100px;
+    }
+
+    .onda.abajo {
+      bottom: -100px;
+      transform: rotate(180deg);
+    }
+
+    .logo {
+      width: 90px;
+      margin-bottom: 25px;
+      animation: flotar 2.5s ease-in-out infinite;
+    }
+
+    @keyframes flotar {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    h1 {
+      color: #ff4f8b;
+      font-size: 2.3rem;
+      margin-bottom: 10px;
+      z-index: 1;
+    }
+
+    p {
+      color: #555;
+      font-size: 1.1rem;
+      max-width: 480px;
+      margin: 0 auto 30px;
+      line-height: 1.6;
+      z-index: 1;
+    }
+
+    .boton {
+      /* Estilos para que el enlace se vea como botón */
+      background-color: #ff4f8b;
+      color: white;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 25px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      font-weight: bold;
+      z-index: 1;
+      text-decoration: none; /* Asegura que no tenga subrayado de enlace */
+      display: inline-block; /* Permite aplicar padding correctamente */
+    }
+
+    .boton:hover {
+      background-color: #ff3366;
+    }
+  </style>
+</head>
+<body>
+  <div class="onda arriba"></div>
+
+  <div class="contenedor">
+    <img src="img/VA.png" alt="Logo" class="logo">
+    <h1>Bienvenida 💖</h1>
+    <p>Descubre tu ciclo, aprende sobre tu cuerpo y conecta con una comunidad que celebra el bienestar femenino.</p>
+    
+    <a href="/index" class="boton">Comenzar</a>
+  </div>
+
+  <div class="onda abajo"></div>
+
+  </body>
+</html>
+

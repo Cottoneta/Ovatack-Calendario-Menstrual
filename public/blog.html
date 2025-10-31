@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Girly Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/estilos.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="#" style="color: #f76c66; font-weight: bold;">
+      <img src="img/VA.png" width="70" height="50" alt="OvaTack" style="vertical-align: middle;"> OvaTack
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-center" id="menuNav">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" href="/usuario">Inicio</a></li>
+<li class="nav-item"><a class="nav-link" href="/calendario">Calendario</a></li>
+<li class="nav-item"><a class="nav-link" href="/tipsview">Tips</a></li>
+<li class="nav-item"><a class="nav-link" href="/blog">Girly Blog</a></li>
+
+      </ul>
+    </div>
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item dropdown">
+        <a id="user-link" class="nav-link dropdown-toggle fw-bold" href="#" role="button" data-bs-toggle="dropdown"></a>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a id="logout-link" class="dropdown-item text-danger fw-bold" href="#">Cerrar sesión</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<h2 class="text-center fw-bold mt-5" style="color: white;">Girly Blog</h2>
+
+<div class="ctn-data d-flex flex-column align-items-center justify-content-center" style="min-height: 40vh;"> 
+  <h1 class="mt-5 text-center">¿Dudas acerca de tus ciclos?</h1> 
+  <p class="text-center">Aquí podrás convivir y compartir experiencias e inquietudes.</p>
+</div>
+
+<main class="container">
+  <section class="comments">
+    <header class="comments__header">
+      <h1 class="comments__title">Comentarios</h1>
+      <span class="comments__count" aria-label="Cantidad de comentarios">0</span>
+    </header>
+
+    <form class="composer" autocomplete="off">
+      <div class="composer__avatar avatar" aria-hidden="true" data-letters="US"></div>
+      <div class="composer__body">
+        <textarea class="composer__input" rows="3" placeholder="Escribe un comentario…"></textarea>
+        <div class="composer__toolbar">
+          <div class="toolbar__left">
+            <button type="button" class="btn btn--ghost" aria-label="Adjuntar archivo">📎 Adjuntar</button>
+            <button type="button" class="btn btn--ghost" aria-label="Insertar emoji">😊 Emoji</button>
+          </div>
+          <div class="toolbar__right">
+            <span class="hint">Ctrl/Cmd + Enter para publicar</span>
+            <button class="btn btn--primary" type="submit">Publicar</button>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <ol class="thread" role="list"></ol>
+  </section>
+</main>
+
+<script>
+const USER = {
+  name: JSON.parse(localStorage.getItem("user"))?.username || "Invitado",
+  initials: (JSON.parse(localStorage.getItem("user"))?.username?.slice(0, 2) || "IN").toUpperCase()
+};
+
+const $  = (sel, ctx=document) => ctx.querySelector(sel);
+
+function escapeHTML(str){ 
+  return (str ?? "").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+function linkify(text){ 
+  return (text ?? "").replace(/(https?:\/\/[^\s]+)/g, url => `<a href="${url}" target="_blank">${url}</a>`);
+}
+
+
+function makeCommentHTML({ id, author, initials, text, date, likes=0 }) {
+  const isAuthor = author === USER.name;
+  const deleteBtn = isAuthor ? `<button class="act act--delete" data-action="delete" type="button">Eliminar</button>` : '';
+  return `
+    <article class="comment__card">
+      <div class="comment__avatar avatar" data-letters="${escapeHTML(initials)}"></div>
+      <div class="comment__content">
+        <header class="comment__meta">
+          <strong>${escapeHTML(author)}</strong>
+          <time datetime="${date}">${new Date(date).toLocaleString()}</time>
+        </header>
+        <p>${linkify(escapeHTML(text))}</p>
+        <footer class="comment__actions">
+          <button class="act act--like" data-action="like" type="button">
+            ❤️ <span class="like-count">${likes}</span>
+          </button>
+          <button class="act" data-action="reply" type="button">Responder</button>
+          ${deleteBtn}
+        </footer>
+      </div>
+    </article>
+  `;
+}
+
+window.addEventListener("DOMContentLoaded", async () => {
+  const thread = $(".thread");
+  const mainComposer = $(".composer");
+  const mainTextarea = $(".composer__input");
+  const countEl = $(".comments__count");
+
+  //aca tan todas las funciomes de los comentarios para el supabase S
+
+  async function cargarComentarios() {
+    const res = await fetch("/api/comentarios");
+    const data = await res.json();
+    thread.innerHTML = "";
+
+    const roots = data.filter(c => !c.padre_id);
+    roots.forEach(c => renderComment(c, data));
+    countEl.textContent = roots.length;
+  }
+
+  function renderComment(comment, allData) {
+    const li = document.createElement("li");
+    li.className = "comment";
+    li.dataset.id = comment.id;
+    li.innerHTML = makeCommentHTML({
+      id: comment.id,
+      author: comment.autor,
+      initials: comment.iniciales,
+      text: comment.texto,
+      date: comment.fecha,
+      likes: comment.likes
+    });
+    thread.prepend(li);
+
+    const replies = allData.filter(r => r.padre_id === comment.id);
+    if (replies.length) {
+      const repliesOl = document.createElement("ol");
+      repliesOl.className = "replies";
+      replies.forEach(r => renderReply(r, repliesOl, allData));
+      li.appendChild(repliesOl);
+    }
+  }
+
+  function renderReply(reply, container, allData) {
+    const li = document.createElement("li");
+    li.className = "comment";
+    li.dataset.id = reply.id;
+    li.innerHTML = makeCommentHTML({
+      id: reply.id,
+      author: reply.autor,
+      initials: reply.iniciales,
+      text: reply.texto,
+      date: reply.fecha,
+      likes: reply.likes
+    });
+    container.appendChild(li);
+
+    const children = allData.filter(r => r.padre_id === reply.id);
+    if (children.length) {
+      const nested = document.createElement("ol");
+      nested.className = "replies";
+      children.forEach(r => renderReply(r, nested, allData));
+      li.appendChild(nested);
+    }
+  }
+
+  //cargar
+
+  mainComposer.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const text = mainTextarea.value.trim();
+    if (!text) return;
+
+    await fetch("/api/comentarios", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        autor: USER.name,
+        iniciales: USER.initials,
+        texto: text
+      })
+    });
+
+    mainTextarea.value = "";
+    await cargarComentarios();
+  });
+
+  async function addReplyToComment(commentEl, { author, initials, text }) {
+    const parentId = commentEl.dataset.id;
+
+    await fetch("/api/comentarios", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        autor: author,
+        iniciales: initials,
+        texto: text,
+        padre_id: parentId
+      })
+    });
+
+    await cargarComentarios();
+  }
+
+  async function eliminarComentario(id) {
+    await fetch(`/api/comentarios/${id}`, { method: "DELETE" });
+    await cargarComentarios();
+  }
+
+  async function darLike(id, btn) {
+    const res = await fetch(`/api/comentarios/${id}/like`, { method: "POST" });
+    const data = await res.json();
+    const countSpan = btn.querySelector(".like-count");
+    if (countSpan && data.likes !== undefined) {
+      countSpan.textContent = data.likes;
+    }
+  }
+
+  function toggleReplyComposer(commentEl){
+    const existing = $(".reply-composer", commentEl);
+    if (existing) { existing.remove(); return; }
+    const form = document.createElement("form");
+    form.className = "reply-composer";
+    form.innerHTML = `
+      <textarea class="composer__input" rows="2" placeholder="Escribe una respuesta…"></textarea>
+      <button class="btn btn--primary" type="submit">Publicar</button>
+    `;
+    commentEl.appendChild(form);
+    const ta = $("textarea", form);
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const txt = ta.value.trim();
+      if (!txt) return;
+      await addReplyToComment(commentEl, { author: USER.name, initials: USER.initials, text: txt });
+      form.remove();
+    });
+  }
+
+  thread.addEventListener("click", async (e) => {
+    const btn = e.target.closest("button[data-action]");
+    if (!btn) return;
+    const action = btn.dataset.action;
+    const commentEl = btn.closest(".comment");
+    const id = commentEl.dataset.id;
+
+    switch (action) {
+      case "like": await darLike(id, btn); break;
+      case "reply": toggleReplyComposer(commentEl); break;
+      case "delete": await eliminarComentario(id); break;
+    }
+  });
+
+  await cargarComentarios();
+});
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (!user || !user.username) {
+    window.location.replace("bienvenida.html");
+    return;
+  }
+
+  const userLink = document.getElementById("user-link");
+  if (userLink) userLink.textContent = user.username;
+
+  const logoutLink = document.getElementById("logout-link");
+  if (logoutLink) {
+    logoutLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      localStorage.clear();
+      window.location.replace("bienvenida.html");
+    });
+  }
+
+  window.addEventListener("pageshow", () => {
+    if (!localStorage.getItem("user")) {
+     window.location.href = "/";
+
+    }
+  });
+});
+</script>
+
+</body>
+</html>

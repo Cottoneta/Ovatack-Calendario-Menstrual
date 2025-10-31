@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OvaTack</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+    body { 
+      font-family: 'Montserrat', sans-serif; 
+      padding-top: 70px; 
+    }
+
+    .loader {
+      position: relative;
+      width: 340px;
+      height: 340px;
+      margin: 50px auto;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffb6d9 20%, transparent 70%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 30px;
+      overflow: hidden;
+    }
+
+    .loader::before, .loader::after {
+      content: "";
+      position: absolute;
+      border: 4px solid #ff69b4;
+      border-radius: 50%;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      animation: ripple 2s infinite;
+      z-index: 1;
+    }
+
+    .loader::after {
+      animation-delay: 1s;
+    }
+
+    @keyframes ripple {
+      0% {
+        transform: scale(0.7);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    .loader > div {
+      position: relative;
+      z-index: 2;
+    }
+
+    #star-h2 { 
+      font-size: 1.5rem; 
+      color: #d63384; 
+      margin-top: 20px;
+    }
+
+    .btn-edit {
+      margin-top: 20px;
+      background-color: white;
+      color: #ff69b4;
+      border-radius: 20px;
+      padding: 10px 18px;
+      border: none;
+      font-weight: bold;
+      transition: 0.3s;
+      cursor: pointer;
+    }
+
+    .btn-edit:hover { 
+      background-color: #ffe6f2; 
+      color: #d63384; 
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+  <div class="container">
+     <a class="navbar-brand" href="#" style="color: #f76c66; font-weight: bold;">
+        <img src="img/VA.png" width="70" height="50" alt="OvaTack" style="vertical-align: middle;"> OvaTack
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-center" id="menuNav">
+      <ul class="navbar-nav">
+     <li class="nav-item"><a class="nav-link" href="/usuario">Inicio</a></li>
+<li class="nav-item"><a class="nav-link" href="/calendario">Calendario</a></li>
+<li class="nav-item"><a class="nav-link" href="/tipsview">Tips</a></li>
+<li class="nav-item"><a class="nav-link" href="/blog">Girly Blog</a></li>
+
+      </ul>
+    </div>
+
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item dropdown">
+        <a id="user-link" class="nav-link dropdown-toggle fw-bold" href="#" role="button" data-bs-toggle="dropdown"></a>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a id="logout-link" class="dropdown-item text-danger fw-bold" href="#">Cerrar sesión</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container text-center mt-5 pt-5">
+  <h1 id="welcome-text" class="fw-bold mb-5">¡Hola! Bienvenida.</h1>
+  
+  <div class="loader">
+    <div>
+      <p id="ciclo-texto"></p>
+      <div id="star-h2"></div>
+      <button class="btn-edit" onclick="window.location.href='calendario.html'"> Editar Fecha </button>
+    </div>
+  </div>
+</div>
+
+
+
+<style>
+  #btnAsistente {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: #ff6fa9;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 65px;
+    height: 65px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    font-size: 28px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  #btnAsistente:hover {
+    transform: scale(1.1);
+  }
+</style>
+
+<button id="btnAsistente" onclick="abrirAsistente()">💬</button>
+
+<script>
+  function abrirAsistente() {
+    window.open("/asistente", "_blank", "width=420,height=600");
+  }
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userLink = document.getElementById("user-link");
+  const welcomeText = document.getElementById("welcome-text");
+  const cicloTexto = document.getElementById("ciclo-texto");
+  const starH2 = document.getElementById("star-h2");
+
+  if (!user || !user.username) {
+   window.location.href = "/";
+
+    return;
+  }
+
+  if (userLink) userLink.textContent = user.username;
+  if (welcomeText) welcomeText.textContent = "¡Hola, " + user.username + "!";
+
+  const usuarioActual = user.username;
+  const clavePeriodo = "diasPeriodo_" + usuarioActual;
+  let diasPeriodo = JSON.parse(localStorage.getItem(clavePeriodo)) || [];
+
+  //Cargar datos desde Supabase
+  async function sincronizarDesdeServidor() {
+    try {
+      const response = await fetch(`/api/calendario/${usuarioActual}`);
+      const data = await response.json();
+
+      if (Array.isArray(data) && data.length > 0) {
+        diasPeriodo = data
+          .filter(item => item.tipo === "periodo")
+          .map(item => item.fecha);
+
+        if (diasPeriodo.length > 0) {
+          localStorage.setItem(clavePeriodo, JSON.stringify(diasPeriodo));
+          actualizarInfoCiclo();
+          return;
+        }
+      }
+
+      // Si llega aquí, no hay datos
+      cicloTexto.textContent = "No hay datos registrados aún.";
+      starH2.textContent = "";
+    } catch (err) {
+      console.error("Error sincronizando calendario desde Supabase:", err);
+      cicloTexto.textContent = "Error al conectar con el servidor.";
+    }
+  }
+
+  //Calcular el día del ciclo
+  function obtenerInicioUltimoPeriodo() {
+  if (diasPeriodo.length === 0) return null;
+
+  
+  const fechas = diasPeriodo
+    .map(f => new Date(f))
+    .sort((a, b) => a - b);
+
+  // Agrupar en bloques consecutivos (días seguidos)
+  let grupos = [];
+  let grupoActual = [fechas[0]];
+
+  for (let i = 1; i < fechas.length; i++) {
+    const diff = (fechas[i] - fechas[i - 1]) / (1000 * 60 * 60 * 24);
+    if (diff === 1) {
+      grupoActual.push(fechas[i]);
+    } else {
+      grupos.push(grupoActual);
+      grupoActual = [fechas[i]];
+    }
+  }
+  grupos.push(grupoActual);
+
+  // Tomar el último grupo (el periodo más reciente)
+  const ultimoGrupo = grupos[grupos.length - 1];
+
+  // Retornar el primer día del último periodo
+  return ultimoGrupo[0];
+}
+
+  function actualizarInfoCiclo() {
+    const inicio = obtenerInicioUltimoPeriodo();
+
+    if (!inicio) {
+      cicloTexto.textContent = "No hay datos registrados aún.";
+      starH2.textContent = "";
+      return;
+    }
+
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    const diferencia = Math.floor((hoy - inicio) / (1000 * 60 * 60 * 24));
+    const diaCiclo = diferencia + 1;
+
+    cicloTexto.innerHTML = `Día del ciclo <strong>${diaCiclo}</strong>`;
+
+    if (diaCiclo >= 1 && diaCiclo <= 5) {
+      starH2.textContent = `Periodo Día ${diaCiclo}`;
+    } else if (diaCiclo >= 10 && diaCiclo <= 15) {
+      starH2.textContent = "Días fértiles";
+    } else if (diaCiclo === 14) {
+      starH2.textContent = "Ovulación";
+    } else {
+      starH2.textContent = "Fase normal";
+    }
+  }
+
+  //Cerrar sesión
+  const logoutLink = document.getElementById("logout-link");
+  if (logoutLink) {
+    logoutLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      localStorage.clear();
+      window.location.href = "/";
+
+    });
+  }
+
+  //Inicializar
+  if (diasPeriodo.length === 0) {
+    sincronizarDesdeServidor();
+  } else {
+    actualizarInfoCiclo();
+  }
+});
+
+</script>
+
+</body>
+</html>

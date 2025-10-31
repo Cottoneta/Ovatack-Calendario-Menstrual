@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Asistente OvaTack</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Poppins", sans-serif;
+      background: #ffe6f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .chat-container {
+      background: #fff;
+      border-radius: 30px;
+      box-shadow: 0 0 25px rgba(255, 111, 169, 0.3);
+      width: 360px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ff6fa9;
+      color: white;
+      padding: 15px 20px;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .mute-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .mute-btn:hover { transform: scale(1.2); }
+
+    #chat {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .msg {
+      max-width: 75%;
+      padding: 10px 15px;
+      border-radius: 20px;
+      word-wrap: break-word;
+    }
+
+    .user {
+      align-self: flex-end;
+      background: #ffbcd4;
+      color: #333;
+      border-bottom-right-radius: 5px;
+    }
+
+    .bot {
+      align-self: flex-start;
+      background: #f7f7f7;
+      color: #333;
+      border-bottom-left-radius: 5px;
+    }
+
+    .input-area {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      border-top: 1px solid #ffd4e3;
+      padding: 10px;
+      gap: 8px;
+    }
+
+    #input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ffd4e3;
+      border-radius: 20px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .btn {
+      background: #ff6fa9;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 15px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn:hover { background: #ff4f8b; }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="header">
+      💗 Asistente OvaTack
+      <button class="mute-btn" id="muteBtn" onclick="toggleMute()">🔊</button>
+    </div>
+    <div id="chat"></div>
+    <div class="input-area">
+      <input id="input" placeholder="Escribe o habla...">
+      <button class="btn" onclick="sendMessage()">ENVIAR</button>
+      <button class="btn" onclick="startVoice()">🎙️</button>
+    </div>
+    <div class="buttons">
+      <button class="btn" onclick="preset('Sí, lo entiendo')">OK, lo entiendo</button>
+      <button class="btn" onclick="preset('No estoy segura')">No, no estoy segura</button>
+    </div>
+  </div>
+
+  <script>
+  // ================================
+  // 🛡️ SEGURIDAD: Verificar sesión
+  // ================================
+  document.addEventListener("DOMContentLoaded", () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const token = localStorage.getItem("token");
+
+    if (!user || !user.username || !token) {
+      alert("⚠️ Debes iniciar sesión para usar el asistente.");
+      window.location.href = "/";
+      return;
+    }
+  });
+  // ================================
+
+
+  let isMuted = false;
+  function toggleMute() {
+    isMuted = !isMuted;
+    document.getElementById("muteBtn").textContent = isMuted ? "🔇" : "🔊";
+  }
+
+  function speak(text) {
+    if (isMuted || !text) return;
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = "es-ES";
+    speechSynthesis.speak(utter);
+  }
+
+  function startVoice() {
+    const rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    rec.lang = "es-ES";
+    rec.start();
+    rec.onresult = async (e) => {
+      const message = e.results[0][0].transcript;
+      document.getElementById("input").value = message;
+      await sendMessage();
+    };
+  }
+
+  function obtenerInicioUltimoPeriodo() {
+    const userData = JSON.parse(localStorage.getItem("user"));
+    const usuarioActual = userData?.username || "default";
+    const clavePeriodo = "diasPeriodo_" + usuarioActual;
+    const diasPeriodo = JSON.parse(localStorage.getItem(clavePeriodo)) || [];
+
+    if (!Array.isArray(diasPeriodo) || diasPeriodo.length === 0) return null;
+
+    const fechas = diasPeriodo
+      .map(s => new Date(s))
+      .filter(d => !isNaN(d))
+      .sort((a, b) => a - b);
+
+    if (fechas.length === 0) return null;
+
+    let i = fechas.length - 1;
+    let start = fechas[i];
+    function toDays(d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+    start = toDays(start);
+
+    while (i > 0) {
+      const prev = toDays(fechas[i - 1]);
+      const diffDays = Math.round((start - prev) / (1000 * 60 * 60 * 24));
+      if (diffDays === 1) {
+        start = prev;
+        i--;
+      } else break;
+    }
+    return start;
+  }
+
+  async function sendMessage() {
+    const input = document.getElementById("input");
+    const chat = document.getElementById("chat");
+    const userMsg = input.value.trim();
+    if (!userMsg) return;
+
+    chat.innerHTML += `<div class="msg user">${userMsg}</div>`;
+    input.value = "";
+
+    const respuesta = await obtenerRespuesta(userMsg.toLowerCase());
+    chat.innerHTML += `<div class="msg bot">${respuesta}</div>`;
+    speak(respuesta);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  async function obtenerRespuesta(msg) {
+    const palabrasCiclo = ["periodo", "menstru", "ciclo", "ovul", "fértil", "fertil"];
+    const esSobreCiclo = palabrasCiclo.some(p => msg.includes(p));
+
+    if (esSobreCiclo) return obtenerRespuestaCiclo(msg);
+    else return obtenerRespuestaLibre(msg);
+  }
+
+  async function obtenerRespuestaLibre(msg) {
+    if (msg.includes("hola")) return "¡Hola! 😊 ¿Cómo te sientes hoy?";
+    if (msg.includes("como estas")) return "Estoy muy bien 💕 ¿y tú?";
+    if (msg.includes("gracias")) return "¡Con gusto! 🌸";
+    if (msg.includes("adios") || msg.includes("chau")) return "¡Hasta luego! 🌷";
+    if (msg.includes("cólico") || msg.includes("colicos") || msg.includes("dolor")) {
+      return "Ay 😔 entiendo, los cólicos pueden ser molestos. Intenta descansar, aplicar calor en tu abdomen o tomar algo tibio 💕.";
+    }
+    if (msg.includes("triste") || msg.includes("mal")) return "Lo siento mucho 💗 a veces es bueno descansar, respirar profundo y darte un gusto pequeño 🌷.";
+    if (msg.includes("feliz") || msg.includes("bien")) return "¡Me alegra mucho escucharlo! 💖 sigue cuidándote y disfrutando tu día.";
+
+    return "Claro 😊 cuéntame más, estoy aquí para escucharte.";
+  }
+
+  function obtenerRespuestaCiclo(msg) {
+    const inicio = obtenerInicioUltimoPeriodo();
+    if (!inicio) return "No tengo registrada tu última menstruación 💧. Puedes actualizarla en tu calendario.";
+
+    const hoy = new Date();
+    hoy.setHours(0,0,0,0);
+    const diferencia = Math.floor((hoy - inicio) / (1000*60*60*24));
+    const diaCiclo = diferencia;
+
+    let estado = "fase normal 🌷";
+    if (diaCiclo >= 1 && diaCiclo <= 5) estado = `tu período menstrual (día ${diaCiclo}) 🩸`;
+    else if (diaCiclo >= 10 && diaCiclo <= 15) estado = `tus días fértiles (día ${diaCiclo}) 🌿`;
+    else if (diaCiclo === 14) estado = `tu día de ovulación 💕`;
+
+    return `Hoy estás en el día ${diaCiclo} de tu ciclo, dentro de ${estado}.`;
+  }
+
+  function preset(text) {
+    document.getElementById("input").value = text;
+    sendMessage();
+  }
+
+  window.addEventListener("storage", (event) => {
+    if (event.key && event.key.startsWith("diasPeriodo_")) {
+      console.log("El calendario se actualizó; datos sincronizados.");
+    }
+  });
+  </script>
+</body>
+</html>

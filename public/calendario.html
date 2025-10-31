@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Calendario Menstrual</title>
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">  
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+     <style>
+       
+        body {
+            padding-top: 100px;
+        }
+    </style>
+
+
+</head>
+<body>
+ <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+    <div class="container">
+    <a class="navbar-brand" href="#" style="color: #f76c66; font-weight: bold;">
+        <img src="img/VA.png" width="70" height="50" alt="OvaTack" style="vertical-align: middle;"> OvaTack
+    </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-center" id="menuNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="/usuario">Inicio</a></li>
+<li class="nav-item"><a class="nav-link" href="/calendario">Calendario</a></li>
+<li class="nav-item"><a class="nav-link" href="/tipsview">Tips</a></li>
+<li class="nav-item"><a class="nav-link" href="/blog">Girly Blog</a></li>
+
+        </ul>
+      </div>
+
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item dropdown">
+          <a id="user-link" class="nav-link dropdown-toggle fw-bold" href="#" role="button" data-bs-toggle="dropdown"></a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a id="logout-link" class="dropdown-item text-danger fw-bold" href="#">Cerrar sesión</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+
+    <style>
+        .calendario {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            max-width: 500px;
+            margin: auto;
+        }
+        .dia {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            background: white;
+            border: 1px solid #ddd;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            position: relative;
+        }
+        .dia:hover {
+            background: #fce4ec;
+        }
+        .periodo {
+            background-color: #F2388F !important;
+            color: white !important;
+        }
+        .prediccion {
+            border: 2px dashed #F2388F;
+            color: #F2388F;
+        }
+        .fertil {
+            background-color: #a5d6a7 !important;
+            color: white;
+        }
+        .ovulacion {
+            background-color: #2e7d32 !important;
+            color: white;
+        }
+        .btn-custom {
+            margin-top: 10px;
+            background-color: #F2388F;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+        .btn-custom:hover {
+            background-color: #d91c6a;
+        }
+        .titulo-mes {
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .nav-botones {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .indicadores {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 2px;
+        }
+        .punto {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #6c757d;
+        }
+        .estrella {
+            color: #F2388F;
+            font-size: 10px;
+        }
+        .modal-sintomas {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+        }
+        .categoria-sintomas {
+            margin-bottom: 15px;
+        }
+        .categoria-titulo {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .opciones-sintomas {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .opcion-sintoma {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 15px;
+            padding: 5px 10px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        .opcion-sintoma.seleccionado {
+            background-color: #F2388F;
+            color: white;
+        }
+        .botones-modal {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container text-center mt-5">
+        <h2 class="fw-bold">Calendario Menstrual</h2>
+        <div class="nav-botones">
+            <button class="btn-custom" onclick="mesAnterior()">⟨</button>
+            <h3 class="titulo-mes" id="tituloMes"></h3>
+            <button class="btn-custom" onclick="mesSiguiente()">⟩</button>
+        </div>
+        <div id="calendario" class="calendario"></div>
+        <div>
+            <button class="btn-custom" onclick="activarEdicion()">Editar fechas</button>
+            <button class="btn-custom" onclick="activarRegistroSintomas()">Añadir síntomas</button>
+        </div>
+    </div>
+
+    <div id="modalSintomas" class="modal-sintomas">
+        <div class="modal-content">
+            <h4 id="tituloModalSintomas">Registrar síntomas</h4>
+            
+            <div class="categoria-sintomas">
+                <div class="categoria-titulo">Síntomas físicos</div>
+                <div class="opciones-sintomas" id="sintomasFisicos">
+                    <div class="opcion-sintoma" data-sintoma="cólicos">Cólicos</div>
+                    <div class="opcion-sintoma" data-sintoma="dolor-cabeza">Dolor de cabeza</div>
+                    <div class="opcion-sintoma" data-sintoma="mareos">Mareos</div>
+                    <div class="opcion-sintoma" data-sintoma="nauseas">Náuseas</div>
+                    <div class="opcion-sintoma" data-sintoma="cansancio">Cansancio</div>
+                    <div class="opcion-sintoma" data-sintoma="dolor-espalda">Dolor de espalda</div>
+                </div>
+            </div>
+            
+            <div class="categoria-sintomas">
+                <div class="categoria-titulo">Emociones</div>
+                <div class="opciones-sintomas" id="emociones">
+                    <div class="opcion-sintoma" data-sintoma="feliz">Feliz</div>
+                    <div class="opcion-sintoma" data-sintoma="triste">Triste</div>
+                    <div class="opcion-sintoma" data-sintoma="ansiosa">Ansiosa</div>
+                    <div class="opcion-sintoma" data-sintoma="irritable">Irritable</div>
+                    <div class="opcion-sintoma" data-sintoma="sensible">Sensible</div>
+                </div>
+            </div>
+            
+            <div class="categoria-sintomas">
+                <div class="categoria-titulo">Actividad sexual</div>
+                <div class="opciones-sintomas" id="actividadSexual">
+                    <div class="opcion-sintoma" data-sintoma="actividad-sexual">Registrar actividad</div>
+                </div>
+            </div>
+            
+            <div class="botones-modal">
+                <button class="btn-custom" onclick="cerrarModalSintomas()">Cancelar</button>
+                <button class="btn-custom" onclick="guardarSintomas()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+  <script>
+const calendario = document.getElementById('calendario');
+const tituloMes = document.getElementById('tituloMes');
+const modalSintomas = document.getElementById('modalSintomas');
+const tituloModalSintomas = document.getElementById('tituloModalSintomas');
+
+let fechaActual = new Date();
+let modoEdicion = false;
+let modoRegistroSintomas = false;
+let diaSeleccionadoParaSintomas = null;
+
+//Obtener usuario activo para lo del nombre
+const userData = JSON.parse(localStorage.getItem("user"));
+const usuarioActual = userData?.username || null;
+
+if (!usuarioActual) {
+  alert("Debes iniciar sesión para usar tu calendario.");
+  window.location.href = "/bienvenida.html";
+}
+
+let diasPeriodo = [];
+let sintomasPorDia = {};
+
+const nombresMeses = [
+  "enero","febrero","marzo","abril","mayo","junio",
+  "julio","agosto","septiembre","octubre","noviembre","diciembre"
+];
+
+const DURACION_CICLO = 28;
+const DURACION_REGLA = 5;
+
+//Cargar historial desde supabase
+async function cargarHistorial() {
+  try {
+    const res = await fetch(`/api/calendario/${usuarioActual}`);
+    const data = await res.json();
+
+    diasPeriodo = data.filter(d => d.tipo === "periodo").map(d => d.fecha);
+    sintomasPorDia = {};
+    data.filter(d => d.tipo === "sintoma").forEach(d => {
+      sintomasPorDia[d.fecha] = d.sintomas || [];
+    });
+
+    renderizarCalendario();
+  } catch (err) {
+    console.error("Error al cargar historial:", err);
+  }
+}
+
+//guardar el dia en supabase
+async function guardarDia(tipo, fecha, sintomas = []) {
+  try {
+    await fetch("/api/calendario", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        usuario: usuarioActual,
+        fecha,
+        tipo,
+        sintomas
+      })
+    });
+  } catch (err) {
+    console.error("Error al guardar día:", err);
+  }
+}
+
+//elimina el dia del calendario
+async function eliminarDia(fecha) {
+  try {
+    await fetch(`/api/calendario/${usuarioActual}/${fecha}`, { method: "DELETE" });
+  } catch (err) {
+    console.error("Error al eliminar día:", err);
+  }
+}
+
+//renderizar calendario
+function renderizarCalendario() {
+  calendario.innerHTML = "";
+
+  const anio = fechaActual.getFullYear();
+  const mes = fechaActual.getMonth();
+  const diasEnMes = new Date(anio, mes + 1, 0).getDate();
+  const primerDiaSemana = new Date(anio, mes, 1).getDay();
+
+  tituloMes.textContent = `${nombresMeses[mes]} ${anio}`;
+
+  // Calcular predicciones
+  let diasPrediccion = [];
+  let diasFertiles = [];
+  let diaOvulacion = null;
+  const ultima = obtenerUltimaFechaMarcada();
+
+  if (ultima) {
+    for (let k = 1; k <= 6; k++) {
+      const periodoK = new Date(ultima);
+      periodoK.setDate(periodoK.getDate() + k * DURACION_CICLO);
+      const ovulK = new Date(ultima);
+      ovulK.setDate(ovulK.getDate() + k * DURACION_CICLO + 14);
+      const inicioFertilK = new Date(ovulK);
+      inicioFertilK.setDate(inicioFertilK.getDate() - 5);
+      const finFertilK = new Date(ovulK);
+      finFertilK.setDate(finFertilK.getDate() + 1);
+
+      if (periodoK.getFullYear() === anio && periodoK.getMonth() === mes) diasPrediccion.push(periodoK.getDate());
+      if (ovulK.getFullYear() === anio && ovulK.getMonth() === mes) diaOvulacion = ovulK.getDate();
+
+      for (let d = new Date(inicioFertilK); d <= finFertilK; d.setDate(d.getDate() + 1)) {
+        if (d.getFullYear() === anio && d.getMonth() === mes) diasFertiles.push(d.getDate());
+      }
+    }
+  }
+
+  // Espacios vacíos al inicio
+  for (let i = 0; i < (primerDiaSemana === 0 ? 6 : primerDiaSemana - 1); i++) {
+    const diaVacio = document.createElement('div');
+    diaVacio.classList.add('dia');
+    diaVacio.style.visibility = "hidden";
+    calendario.appendChild(diaVacio);
+  }
+
+  // Días reales
+  for (let i = 1; i <= diasEnMes; i++) {
+    const diaEl = document.createElement('div');
+    diaEl.classList.add('dia');
+
+    const numeroDia = document.createElement('div');
+    numeroDia.textContent = i;
+    diaEl.appendChild(numeroDia);
+
+    const indicadoresEl = document.createElement('div');
+    indicadoresEl.classList.add('indicadores');
+
+    const claveDia = `${anio}-${String(mes+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
+    const sintomasDia = sintomasPorDia[claveDia] || [];
+
+    if (sintomasDia.length > 0 && !sintomasDia.includes("actividad-sexual")) {
+      const puntoEl = document.createElement('div');
+      puntoEl.classList.add('punto');
+      indicadoresEl.appendChild(puntoEl);
+    }
+
+    if (sintomasDia.includes("actividad-sexual")) {
+      const estrellaEl = document.createElement('div');
+      estrellaEl.classList.add('estrella');
+      estrellaEl.innerHTML = '⭐';
+      indicadoresEl.appendChild(estrellaEl);
+    }
+
+    diaEl.appendChild(indicadoresEl);
+
+    const esPeriodo = diasPeriodo.includes(claveDia);
+    const esPred = diasPrediccion.includes(i);
+    const esFertil = diasFertiles.includes(i);
+    const esOvulacion = (i === diaOvulacion);
+
+    if (esPeriodo) diaEl.classList.add('periodo');
+    if (esPred) diaEl.classList.add('prediccion');
+    if (!esPeriodo && esFertil) diaEl.classList.add('fertil');
+    if (!esPeriodo && esOvulacion) diaEl.classList.add('ovulacion');
+
+    diaEl.addEventListener('click', async () => {
+      if (modoEdicion) {
+        const idx = diasPeriodo.indexOf(claveDia);
+        if (idx > -1) {
+          diasPeriodo.splice(idx, 1);
+          await eliminarDia(claveDia);
+        } else {
+          diasPeriodo.push(claveDia);
+          await guardarDia("periodo", claveDia);
+        }
+        renderizarCalendario();
+      } else if (modoRegistroSintomas) {
+        diaSeleccionadoParaSintomas = { anio, mes, dia: i };
+        abrirModalSintomas();
+      }
+    });
+
+    calendario.appendChild(diaEl);
+  }
+}
+
+// =============================
+// 🔸 Funciones auxiliares
+// =============================
+function obtenerUltimaFechaMarcada() {
+  if (diasPeriodo.length === 0) return null;
+  const fechas = diasPeriodo.map(f => new Date(f));
+  fechas.sort((a, b) => a - b);
+  return fechas[fechas.length - 1];
+}
+
+function activarEdicion() {
+  modoEdicion = !modoEdicion;
+  modoRegistroSintomas = false;
+  alert(modoEdicion ? "Modo edición ACTIVADO" : "Modo edición DESACTIVADO");
+}
+
+function activarRegistroSintomas() {
+  modoRegistroSintomas = !modoRegistroSintomas;
+  modoEdicion = false;
+  alert(modoRegistroSintomas ? "Modo registro de síntomas ACTIVADO" : "Modo registro de síntomas DESACTIVADO");
+}
+
+function abrirModalSintomas() {
+  if (!diaSeleccionadoParaSintomas) return;
+
+  const { anio, mes, dia } = diaSeleccionadoParaSintomas;
+  tituloModalSintomas.textContent = `Síntomas - ${dia} ${nombresMeses[mes]} ${anio}`;
+
+  document.querySelectorAll('.opcion-sintoma').forEach(opcion => {
+    opcion.classList.remove('seleccionado');
+  });
+
+  const claveDia = `${anio}-${String(mes+1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
+  const sintomasRegistrados = sintomasPorDia[claveDia] || [];
+
+  sintomasRegistrados.forEach(sintoma => {
+    const opcion = document.querySelector(`.opcion-sintoma[data-sintoma="${sintoma}"]`);
+    if (opcion) opcion.classList.add('seleccionado');
+  });
+
+  modalSintomas.style.display = 'flex';
+}
+
+function cerrarModalSintomas() {
+  modalSintomas.style.display = 'none';
+  diaSeleccionadoParaSintomas = null;
+}
+
+async function guardarSintomas() {
+  if (!diaSeleccionadoParaSintomas) return;
+
+  const { anio, mes, dia } = diaSeleccionadoParaSintomas;
+  const claveDia = `${anio}-${String(mes+1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
+
+  const sintomasSeleccionados = [];
+  document.querySelectorAll('.opcion-sintoma.seleccionado').forEach(opcion => {
+    sintomasSeleccionados.push(opcion.getAttribute('data-sintoma'));
+  });
+
+  if (sintomasSeleccionados.length > 0) {
+    sintomasPorDia[claveDia] = sintomasSeleccionados;
+    await guardarDia("sintoma", claveDia, sintomasSeleccionados);
+  } else {
+    delete sintomasPorDia[claveDia];
+    await eliminarDia(claveDia);
+  }
+
+  cerrarModalSintomas();
+  renderizarCalendario();
+}
+
+function mesAnterior() {
+  fechaActual.setMonth(fechaActual.getMonth() - 1);
+  renderizarCalendario();
+}
+
+function mesSiguiente() {
+  fechaActual.setMonth(fechaActual.getMonth() + 1);
+  renderizarCalendario();
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll('.opcion-sintoma').forEach(opcion => {
+    opcion.addEventListener('click', function() {
+      this.classList.toggle('seleccionado');
+    });
+  });
+  cargarHistorial();
+});
+
+//cerrar sesión
+document.getElementById("logout-link").addEventListener("click", (e) => {
+  e.preventDefault();
+  localStorage.clear();
+  window.location.href = "/";
+
+});
+</script>
+
+</body>
+</html>

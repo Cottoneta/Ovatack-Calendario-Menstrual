@@ -1,0 +1,37 @@
+
+.montserrat {
+  font-family: 'Montserrat', sans-serif;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background: #FFEBF6; 
+  color: #F2388F;      
+}
+
+
+    .navbar-custom {
+      background-color: #ffe6f2;
+    }
+
+.nav-link {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold; 
+  color: #F2388F !important; 
+  padding: 0.6rem 1.2rem !important;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  position: relative;
+  text-decoration: none;
+}
+
+
+.nav-link:hover {
+  background: rgba(242, 56, 143, 0.08); 
+  color: #F2388F !important;
+  transform: translateY(-2px);
+}
+
+.nav-link:hover::before {
+  width: 80%;
+}
